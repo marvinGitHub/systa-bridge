@@ -1,0 +1,1 @@
+0-59 * * * * sh /root/systa-bridge/cron/webserver/webserver.sh >> /tmp/webserver.log
