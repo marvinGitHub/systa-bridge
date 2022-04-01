@@ -3,7 +3,7 @@
 class SystaBridge
 {
     const COMMAND_START_MONITORING_V1 = '0a01141f';
-    const COMMAND_START_MONITORING_V2 = '0a01141e';
+    const COMMAND_START_MONITORING_V2 = '0a0114e1';
 
     public function getDocumentedCommands()
     {
@@ -21,5 +21,32 @@ class SystaBridge
             SystaBridge::COMMAND_START_MONITORING_V1 => 'System: Keep Alive Packet v1 to request monitoring data',
             SystaBridge::COMMAND_START_MONITORING_V2 => 'System: Keep Alive Packet v2 to request monitoring data'
         ];
+    }
+
+    public static function getFixed(string $string, $length = 2, $padchar = "0", $type = STR_PAD_LEFT)
+    {
+        if (strlen($string) > $length) {
+            return substr($string, 0, $length);
+        } else {
+            return str_pad($string, $length, $padchar, $type);
+        }
+    }
+
+
+    public static function checksum(string $hex)
+    {
+        $value = 0;
+
+        for ($i = 0; $i < strlen($hex) / 2; $i++) {
+            $value += hexdec(substr($hex, $i * 2, 2));
+        }
+      
+        $checksum = $value % 256;
+
+        if ($checksum > 0) {
+            return static::getFixed(dechex(256 - $checksum));
+        }
+
+        return 0;  
     }
 }

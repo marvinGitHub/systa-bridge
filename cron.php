@@ -24,15 +24,6 @@ $serial->deviceOpen();
 $queue = new Queue($config['queue']);
 $dump = new Dump($config['dumpfile']);
 
-function getFixed($string, $length, $padchar = " ", $type = STR_PAD_RIGHT)
-{
-    if (strlen($string) > $length) {
-        return substr($string, 0, $length);
-    } else {
-        return str_pad($string, $length, $padchar, $type);
-    }
-}
-
 function sendSystaCommand($command)
 {
     global $serial;
@@ -40,6 +31,19 @@ function sendSystaCommand($command)
     $serial->sendMessage(hex2bin($command));
     $log->append(sprintf('Command %s sent to device', $command));
     sleep(5);
+}
+
+function validateChecksum(string $telegram) {
+    global $log;
+    $checksum = SystaBridge::checksum(substr($telegram, 0, strlen($telegram) - 2));
+    $expected = substr($telegram, strlen($telegram) - 2);
+
+    if ($checksum != $expected) {
+        $log->append(sprintf('Checksum mismatch. telegram: %s expected: %s actual: %s', $telegram, $expected, $checksum));
+        return false;
+    }
+     
+    return true;
 }
 
 
@@ -75,7 +79,7 @@ while (true) {
 
         $c = ord($incomingDataFromSerial{$i});
 
-        $translated = getFixed(dechex($c), 2, "0", STR_PAD_LEFT);
+        $translated = SystaBridge::getFixed(dechex($c), 2, "0", STR_PAD_LEFT);
         $buffer .= $translated;
 
         if ($config['dump']) {
@@ -91,19 +95,22 @@ while (true) {
 
     $matches = null;
     if (1 === preg_match('/(fc200c01[0-9a-f]{62})/', $buffer, $matches)) {
-        $monitor->save($telegram = $matches[1]);
+        if (validateChecksum($telegram = $matches[1])) {
+            $monitor->save($telegram);
+        }
         $buffer = str_replace($telegram, '', $buffer);
     }
 
     $matches = null;
     if (1 === preg_match('/(fc220c02[0-9a-f]{66})/', $buffer, $matches)) {
-        $monitor->save($telegram = $matches[1]);
+        if (validateChecksum($telegram = $matches[1])) {
+            $monitor->save($telegram);
+        }        
         $buffer =  str_replace($telegram, '', $buffer);
     }
 
     // remove keep alive response from buffer
     if (0 === strpos($buffer, SystaBridge::COMMAND_START_MONITORING_V1) || 0 === strpos($buffer, SystaBridge::COMMAND_START_MONITORING_V2)) {
         $buffer = '';
- 
     }
 }

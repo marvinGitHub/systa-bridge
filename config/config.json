@@ -3,7 +3,7 @@
     "logfile": "\/tmp\/system.log",
     "queue": "\/tmp\/command.txt",
     "dumpfile": "\/tmp\/dump.txt",
-    "monitoring": "false",
+    "monitoring": true,
     "monitor": "\/tmp",
     "dump": false,
     "bufferLimit": 512

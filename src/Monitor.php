@@ -118,15 +118,21 @@ class Monitor
             return file_put_contents($this->getPathnamePage1(), json_encode($page, JSON_PRETTY_PRINT));
 
         } else if (0 === strpos($message, 'fc220c02')) {
+
             // Systa Comfort, Monitordatensatz 2
+
+
+
             $message = str_replace('fc220c02', '', $message);
+
+            $states = strrev(base_convert(substr($message, 24, 4) ,16, 2));
+
             $raumsollhk1 = hexdec(substr($message, 0, 4)) * 0.1;
             $raumsollhk2 = hexdec(substr($message, 4, 4)) * 0.1;
             $vlsollhk1 = hexdec(substr($message, 8, 4)) * 0.1;
             $vlsollhk2 = hexdec(substr($message, 12, 4)) * 0.1;
             $wwsoll = hexdec(substr($message, 16, 4)) * 0.1;
             $puffersoll = hexdec(substr($message, 20, 4)) * 0.1;
-            $zustandausgaenge = substr($message, 24, 4);
             $bskessel = hexdec(substr($message, 28, 8));
             $kesselstarts = hexdec(substr($message, 36, 8));
             $stoercodekessel = hexdec(substr($message, 44, 4));
@@ -147,18 +153,27 @@ class Monitor
 'temperatureSetFlowCircuit2' => $vlsollhk2,
 'temperatureSetHotWater' => $wwsoll,
 'temperatureSetBuffer' => $puffersoll,
-'stateOutputConnector' => $zustandausgaenge,
+'statePumpCircuit1' => (int)$states[0],
+'statePumpCircuit2' => (int)$states[1],
+'statePumpBoiler' => (int)$states[2],
+'stateMixerCircuit1' => (int)$states[3] ? 1 : 0,
+'stateMixerCircuit2' => (int)$states[5] ? 1 : 0,
+'stateSwitchingValve' => (int)$states[7],
+'statePumpCirculation' => (int)$states[8],
+'stateBurnerContact' => (int)$states[9],
+'stateButtonBurnerDeactivate' => (int)$states[10],
 'operationTimeHoursBoiler' => $bskessel,
 'counterBoilerStart' => $kesselstarts,
+'counterBoilerStartPerHour' => round($bskessel / $kesselstarts, 1),
 'errorCodeBoiler' => $stoercodekessel,
 'errorCodeSensor' => $stoercodefuehler,
 'operationModeCircuit1' => $betriebsarthk1,
 'niveauCircuit1' => $niveauhk1,
-'operationModeCircuit1' => $betriebsarthk2,
+'operationModeCircuit2' => $betriebsarthk2,
 'niveauCircuit2' => $niveauhk2,
-'powerCircuit1' => $leistungphk1,
-'powerCircuit2' => $leistungphk2,
-'powerTotal' => $leistungpk
+'powerSetPumpCircuit1' => $leistungphk1,
+'powerSetPumpCircuit2' => $leistungphk2,
+'powerSetPumpBoiler' => $leistungpk
 ];
 
             return file_put_contents($this->getPathnamePage2(), json_encode($page, JSON_PRETTY_PRINT));

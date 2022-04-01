@@ -1,5 +1,23 @@
 <?php
 
+
+$users = [];
+foreach (explode(PHP_EOL, file_get_contents(__DIR__ . '/users.txt')) as $line) {
+    $credentials = explode(':', $line);
+    $users[$credentials[0]] = $credentials[1];
+}
+
+$user = $_SERVER['PHP_AUTH_USER'];
+$password = $_SERVER['PHP_AUTH_PW'];
+
+$validated = array_key_exists($user, $users) && ($password === $users[$user]);
+
+if (!$validated) {
+  header('WWW-Authenticate: Basic realm="Restricted Area"');
+  header('HTTP/1.0 401 Unauthorized');
+  die ("Not authorized");
+}
+
 require 'src/autoload.php';
 
 $systaBridge = new SystaBridge();
@@ -15,15 +33,24 @@ $log = new Log($config['logfile']);
 $monitor = new Monitor($config['monitor']);
 
 $serialDeviceConfiguration = new SerialDeviceConfiguration($config['serialDevice']);
-$states = [
+$state = new State($serialDeviceConfiguration, $monitor);
+
+$statesSystem = [
     State::STATE_OK => 'OK',
     State::STATE_ERROR_BOILER => 'Error Boiler',
     State::STATE_ERROR_SENSOR => 'Error Sensor',
     State::STATE_NOT_CONNECTED => 'Not connected',
     State::STATE_UNKNOWN => 'Unknown'
 ];
-$state = new State($serialDeviceConfiguration, $monitor);
-$stateTranslation = $states[$state->getState()];
+
+$statesBoiler = [
+    State::STATE_BOILER_ON => 'Running',
+    State::STATE_BOILER_OFF => 'Idle',
+    State::STATE_BOILER_UNKNOWN => 'Unknown'
+];
+
+$translationStateBoiler = $statesBoiler[$state->getStateBoiler()];
+$translationStateSystem = $statesSystem[$state->getStateSystem()];
 
 $blockDocumentedCommands = '';
 foreach ($systaBridge->getDocumentedCommands() as $hex => $description) {
@@ -61,7 +88,8 @@ echo <<<HTML
     <button name="command" value="reboot">Reboot</button>
 </form>
 
-<b>System State: </b>$stateTranslation<br /><br />
+<b>State System: </b>$translationStateSystem<br />
+<b>State Boiler: </b>$translationStateBoiler<br /><br />
 <b>Supported Systa Commands</b><br />
 <ul>
 {$blockDocumentedCommands}

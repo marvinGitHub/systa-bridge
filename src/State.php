@@ -9,6 +9,9 @@ class State {
     const STATE_ERROR_BOILER = 2;
     const STATE_ERROR_SENSOR = 3;
     const STATE_UNKNOWN = 4;
+    const STATE_BOILER_ON = 5;
+    const STATE_BOILER_OFF = 6;
+    const STATE_BOILER_UNKNOWN = 7;
 
     private $serialDeviceConfiguration;
     private $monitor;
@@ -18,7 +21,7 @@ class State {
         $this->monitor = $monitor;
     }
 
-    public function getState() {
+    public function getStateSystem() {
         if (!$this->serialDeviceConfiguration->serialDeviceAttached()) {
             return State::STATE_NOT_CONNECTED;
         }
@@ -38,5 +41,19 @@ class State {
         }
 
         return State::STATE_OK;
+    }
+
+    public function getStateBoiler() {
+        $page2 = json_decode($this->monitor->loadPage2(), true);
+
+        if (!isset($page2['powerActual'])) {
+            return State::STATE_BOILER_UNKNOWN;
+        }
+
+        if (0 < $page2['powerActual']) {
+            return State::STATE_BOILER_ON;
+        }
+
+        return State::STATE_BOILER_OFF;
     }
 }
