@@ -46,11 +46,11 @@ class State {
     public function getStateBoiler() {
         $page2 = json_decode($this->monitor->loadPage2(), true);
 
-        if (!isset($page2['powerActual'])) {
+        if (!isset($page2['stateBurnerContact'])) {
             return State::STATE_BOILER_UNKNOWN;
         }
 
-        if (0 < $page2['powerActual']) {
+        if (1 === $page2['stateBurnerContact']) {
             return State::STATE_BOILER_ON;
         }
 

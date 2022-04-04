@@ -3,11 +3,21 @@
 class Monitor
 {
     private $directory;
+    private $states;
 
     public function __construct(string $directory)
     {
         $this->directory = $directory;
     }
+
+    private function getState(int $bit) {
+        if (($bit < 0) || ($bit > 12)) {
+            return false;
+        }
+
+        return ($this->states & (1 << $bit)) === 0 ? 0 : 1;
+    }
+
 
     private function getPathnamePage1()
     {
@@ -125,7 +135,8 @@ class Monitor
 
             $message = str_replace('fc220c02', '', $message);
 
-            $states = strrev(base_convert(substr($message, 24, 4) ,16, 2));
+            #$states = strrev(base_convert(substr($message, 24, 4) ,16, 2));
+            $this->states = hexdec(substr($message, 24, 4));
 
             $raumsollhk1 = hexdec(substr($message, 0, 4)) * 0.1;
             $raumsollhk2 = hexdec(substr($message, 4, 4)) * 0.1;
@@ -153,18 +164,23 @@ class Monitor
 'temperatureSetFlowCircuit2' => $vlsollhk2,
 'temperatureSetHotWater' => $wwsoll,
 'temperatureSetBuffer' => $puffersoll,
-'statePumpCircuit1' => (int)$states[0],
-'statePumpCircuit2' => (int)$states[1],
-'statePumpBoiler' => (int)$states[2],
-'stateMixerCircuit1' => (int)$states[3] ? 1 : 0,
-'stateMixerCircuit2' => (int)$states[5] ? 1 : 0,
-'stateSwitchingValve' => (int)$states[7],
-'statePumpCirculation' => (int)$states[8],
-'stateBurnerContact' => (int)$states[9],
-'stateButtonBurnerDeactivate' => (int)$states[10],
+'states' => $this->states,
+'statePumpCircuit1' => $this->getState(0),
+'statePumpCircuit2' => $this->getState(1),
+'statePumpBoiler' => $this->getState(2),
+'stateMixerOpenCircuit1' => $this->getState(3),
+'stateMixerClosedCircuit1' => $this->getState(4),
+'stateMixerOpenCircuit2' => $this->getState(5),
+'stateMixerClosedCircuit2' => $this->getState(6),
+'stateSwitchingValve' => $this->getState(7),
+'statePumpCirculation' => $this->getState(8),
+'stateBurnerContact' => $this->getState(9),
+'stateButtonBurnerDeactivate' => $this->getState(10),
+'stateModuleLON' => $this->getState(11),
+'stateModuleOpenTherm' => $this->getState(12),
 'operationTimeHoursBoiler' => $bskessel,
 'counterBoilerStart' => $kesselstarts,
-'counterBoilerStartPerHour' => round($bskessel / $kesselstarts, 1),
+'averageOperationTimeMinutes' => round(($bskessel / $kesselstarts) * 60, 0),
 'errorCodeBoiler' => $stoercodekessel,
 'errorCodeSensor' => $stoercodefuehler,
 'operationModeCircuit1' => $betriebsarthk1,

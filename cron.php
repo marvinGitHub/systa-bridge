@@ -110,7 +110,11 @@ while (true) {
     }
 
     // remove keep alive response from buffer
-    if (0 === strpos($buffer, SystaBridge::COMMAND_START_MONITORING_V1) || 0 === strpos($buffer, SystaBridge::COMMAND_START_MONITORING_V2)) {
-        $buffer = '';
+    if (false !== strpos($buffer, SystaBridge::COMMAND_START_MONITORING_V1)) {
+        $buffer = str_replace(SystaBridge::COMMAND_START_MONITORING_V1, '', $buffer);
+    } 
+
+    if (false !== strpos($buffer, SystaBridge::COMMAND_START_MONITORING_V2)) {
+        $buffer = str_replace(SystaBridge::COMMAND_START_MONITORING_V2, '', $buffer);
     }
 }
