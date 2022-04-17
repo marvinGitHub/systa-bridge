@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7d4fcf8e-3818-4045-924e-a451f04a29e7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Monitor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Monitor.php" afterDir="false" />
-    </list>
+    <list default="true" id="7d4fcf8e-3818-4045-924e-a451f04a29e7" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,6 +41,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php.debug" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -64,7 +63,7 @@
       <option name="presentableId" value="Default" />
       <updated>1650050140214</updated>
       <workItem from="1650050141922" duration="2973000" />
-      <workItem from="1650208512065" duration="3950000" />
+      <workItem from="1650208512065" duration="4599000" />
     </task>
     <servers />
   </component>
