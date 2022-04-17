@@ -1,0 +1,39 @@
+#!/bin/sh
+ln -s /usr/bin/php-cli /usr/bin/php
+
+cd /etc/init.d/ && ./micrond restart
+
+uci set system.@system[0].hostname=SystaBridge
+uci commit
+
+uci add firewall redirect
+uci set firewall.@redirect[-1].enabled=1
+uci set firewall.@redirect[-1].name=AllowWANWeb
+uci set firewall.@redirect[-1].src=wan
+uci set firewall.@redirect[-1].src_dport=8400
+uci set firewall.@redirect[-1].dest=lan
+uci set firewall.@redirect[-1].dest_ip=192.168.1.1
+uci set firewall.@redirect[-1].dest_port=8400
+uci set firewall.@redirect[-1].target=DNAT
+
+uci add firewall redirect
+uci set firewall.@redirect[-1].enabled=1
+uci set firewall.@redirect[-1].name=AllowWANSSH
+uci set firewall.@redirect[-1].src=wan
+uci set firewall.@redirect[-1].src_dport=22
+uci set firewall.@redirect[-1].dest=lan
+uci set firewall.@redirect[-1].dest_ip=192.168.1.1
+uci set firewall.@redirect[-1].dest_port=22
+uci set firewall.@redirect[-1].target=DNAT
+
+uci add firewall redirect
+uci set firewall.@redirect[-1].enabled=1
+uci set firewall.@redirect[-1].name=AllowWANLuci
+uci set firewall.@redirect[-1].src=wan
+uci set firewall.@redirect[-1].src_dport=80
+uci set firewall.@redirect[-1].dest=lan
+uci set firewall.@redirect[-1].dest_ip=192.168.1.1
+uci set firewall.@redirect[-1].dest_port=80
+uci set firewall.@redirect[-1].target=DNAT
+
+uci commit firewall

@@ -2,7 +2,7 @@
 
 
 $users = [];
-foreach (explode(PHP_EOL, file_get_contents(__DIR__ . '/users.txt')) as $line) {
+foreach (explode(PHP_EOL, file_get_contents(__DIR__ . '/config/users.txt')) as $line) {
     $credentials = explode(':', $line);
     $users[$credentials[0]] = $credentials[1];
 }

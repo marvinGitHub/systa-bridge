@@ -1,0 +1,4 @@
+#!/bin/sh
+cd /etc/init.d/ && ./micrond stop
+
+exit 0
