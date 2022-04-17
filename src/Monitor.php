@@ -138,7 +138,7 @@ class Monitor
                 'stateSwitchingValve' => $this->getState(7),
                 'statePumpCirculation' => $this->getState(8),
                 'stateBurnerContact' => $this->getState(9),
-                'stateButtonBurnerDeactivate' => $this->getState(10),
+                'stateButtonCirculation' => $this->getState(10),
                 'stateModuleLON' => $this->getState(11),
                 'stateModuleOpenTherm' => $this->getState(12),
                 'operationTimeHoursBoiler' => hexdec(substr($message, 28, 8)),
