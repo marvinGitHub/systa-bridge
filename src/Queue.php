@@ -2,7 +2,6 @@
 
 class Queue
 {
-
     private $pathname;
 
     public function __construct(string $pathname)
@@ -13,7 +12,7 @@ class Queue
     public function load()
     {
         if (!file_exists($this->pathname)) {
-            return false; 
+            return false;
         }
         return file_get_contents($this->pathname);
     }

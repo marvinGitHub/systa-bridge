@@ -1,5 +1,7 @@
 <?php
 
+ini_set('serialize_precision', 10);
+
 try {
     require 'src/autoload.php';
 
@@ -15,8 +17,7 @@ try {
         'resetSystemConfiguration',
         'getServerStatus',
         'clearCommandQueue',
-        'showMonitorPage1',
-        'showMonitorPage2',
+        'showMonitor',
         'showDump',
         'clearDump',
         'reboot',
@@ -28,7 +29,8 @@ try {
     ];
     sort($supportedCommands);
 
-    function stdout($content) {
+    function stdout($content)
+    {
         echo <<<HTML
 <pre>$content</pre>
 HTML;
@@ -93,14 +95,24 @@ HTML;
                 $log->append($message);
                 exit;
             }
-            if (!array_key_exists($systaCommand = $_POST['systaCommand'], $systaBridge->getDocumentedCommands())) {
-                stdout($message = 'Unsupported systa command provided.');
+            $valid = $invalid = [];
+            foreach (explode(',', $_POST['systaCommand']) as $systaCommand) {
+                if (array_key_exists($systaCommand, $systaBridge->getDocumentedCommands())) {
+                    $valid[] = $systaCommand;
+                } else {
+                    $invalid[] = $systaCommand;
+                }
+            }
+            if (count($invalid)) {
+                stdout($message = sprintf('Unsupported systa commands provided: %s', implode(', ', $invalid)));
                 $log->append($message);
                 exit;
             }
-            $queue->queue($systaCommand);
-            stdout($message = sprintf('Command %s has been added to queue.', $systaCommand));
-            $log->append($message);
+            foreach ($valid as $systaCommand) {
+                $queue->queue($systaCommand);
+                stdout($message = sprintf('Command %s has been added to queue.', $systaCommand));
+                $log->append($message);
+            }
             exit;
         case 'showCommandQueue':
             $log->append('Show command queue');
@@ -116,23 +128,14 @@ HTML;
             stdout($message = 'Command queue has been cleared.');
             $log->append($message);
             exit;
-        case 'showMonitorPage1':
-            $log->append('Load monitor page 1.');
-            if (empty($page = $monitor->loadPage1())) {
-                stdout($message = 'No monitoring data available on page 1.');
+        case 'showMonitor':
+            $log->append('Load monitor.');
+            if (empty($page = $monitor->load())) {
+                stdout($message = 'No monitoring data available.');
                 $log->append($message);
                 exit;
             }
-            stdout($page);
-            exit;
-        case 'showMonitorPage2':
-            $log->append('Load monitor page 2.');
-            if (empty($page = $monitor->loadPage2())) {                                                            
-                stdout($message = 'No monitoring data available on page 2.');                                      
-                $log->append($message);                                                                            
-                exit;                                                                                              
-            }
-            stdout($page);
+            stdout(json_encode($page, JSON_PRETTY_PRINT));
             exit;
         case 'showDump':
             $log->append('Load dump');
@@ -151,7 +154,7 @@ HTML;
         case 'reboot':
             stdout($message = 'Rebooting...');
             $log->append($message);
-            exec('reboot');            
+            exec('reboot');
             exit;
         case 'configureSerialDevice':
             if ($serialDeviceConfiguration->alreadyConfigured()) {
@@ -161,12 +164,12 @@ HTML;
             }
             if (false === $serialDeviceConfiguration->configure()) {
                 stdout($message = 'Serial device configuration failed.');
-            } else { 
-                stdout($message = 'Serial device configuration succesful.'); 
-            }    
+            } else {
+                stdout($message = 'Serial device configuration succesful.');
+            }
             $log->append($message);
             exit;
-	case 'showSerialDeviceConfiguration':
+        case 'showSerialDeviceConfiguration':
             $log->append('Load serial device configuration');
             if (empty($currentSerialDeviceConfiguration = $serialDeviceConfiguration->load())) {
                 stdout($message = 'Failed getting current serial device configuration.');

@@ -2,8 +2,7 @@
 [ -f /tmp/cron.log ] && rm /tmp/cron.log
 [ -f /tmp/webserver.log ] && rm /tmp/webserver.log
 [ -f /tmp/system.log ] && rm /tmp/system.log
-[ -f /tmp/page1.txt ] && rm /tmp/page1.txt
-[ -f /tmp/page2.txt ] && rm /tmp/page2.txt
+[ -f /tmp/monitor.txt ] && rm /tmp/monitor.txt
 [ -f /tmp/dump.txt ] && rm /tmp/dump.txt
 [ -f /tmp/command.txt ] && rm /tmp/command.txt
 

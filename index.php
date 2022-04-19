@@ -80,8 +80,7 @@ echo <<<HTML
     <button name="command" value="clearDump">Clear Dump</button>
     <button name="command" value="enableDump">Enable Dump</button>
     <button name="command" value="disableDump">Disable Dump</button>
-    <button name="command" value="showMonitorPage1">Show Monitor Page 1</button>
-    <button name="command" value="showMonitorPage2">Show Monitor Page 2</button>
+    <button name="command" value="showMonitor">Show Monitor</button>
     <button name="command" value="configureSerialDevice">Configure Serial Device</button>
     <button name="command" value="showSerialDeviceConfiguration">Show Serial Device Configuration</button>
     <button name="command" value="findSerialDevices">Find Serial Devices</button>

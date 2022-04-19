@@ -1,7 +1,7 @@
 <?php
 
-class Dump {
-
+class Dump
+{
     private $pathname;
 
     public function __construct(string $pathname)

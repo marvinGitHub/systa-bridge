@@ -3,37 +3,23 @@ define("SERIAL_DEVICE_NOTSET", 0);
 define("SERIAL_DEVICE_SET", 1);
 define("SERIAL_DEVICE_OPENED", 2);
 
-/**
- * Serial port control class
- *
- * THIS PROGRAM COMES WITH ABSOLUTELY NO WARRANTIES !
- * USE IT AT YOUR OWN RISKS !
- *
- * @author Rémy Sanchez <thenux@gmail.com>
- * @thanks Aurélien Derouineau for finding how to open serial ports with windows
- * @thanks Alec Avedisyan for help and testing with reading
- * @copyright under GPL 2 licence
- */
 class Serial
 {
     public $_device = null;
-    public $_windevice = null;
     public $_dHandle = null;
     public $_dState = SERIAL_DEVICE_NOTSET;
     public $_buffer = "";
     public $_os = "";
 
     /**
-     * This var says if buffer should be flushed by sendMessage (true) or manualy (false)
+     * This var says if buffer should be flushed by sendMessage (true) or manually (false)
      *
      * @var bool
      */
     public $autoflush = true;
 
     /**
-     * Constructor. Perform some checks about the OS and setserial
-     *
-     * @return Serial
+     * Constructor
      */
     public function __construct()
     {
@@ -46,13 +32,10 @@ class Serial
             if ($this->_exec("stty --version") === 0) {
                 register_shutdown_function([$this, "deviceClose"]);
             } else {
-                trigger_error("No stty availible, unable to run.", E_USER_ERROR);
+                trigger_error("No stty available, unable to run.", E_USER_ERROR);
             }
-        } elseif (substr($sysname, 0, 7) === "Windows") {
-            $this->_os = "windows";
-            register_shutdown_function([$this, "deviceClose"]);
         } else {
-            trigger_error("Host OS is neither linux nor windows, unable tu run.", E_USER_ERROR);
+            trigger_error("Host OS is not linux,unable tu run.", E_USER_ERROR);
             exit();
         }
     }
@@ -60,8 +43,6 @@ class Serial
     /**
      * Device set function : used to set the device name/address.
      * -> linux : use the device address, like /dev/ttyS0
-     * -> windows : use the COMxx device name, like COM1 (can also be used
-     *     with linux)
      *
      * @param string $device the name of the device to be used
      * @return bool
@@ -76,13 +57,6 @@ class Serial
 
                 if ($this->_exec("stty -F " . $device) === 0) {
                     $this->_device = $device;
-                    $this->_dState = SERIAL_DEVICE_SET;
-                    return true;
-                }
-            } elseif ($this->_os === "windows") {
-                if (preg_match("@^COM(\d+):?$@i", $device, $matches) and $this->_exec(exec("mode " . $device)) === 0) {
-                    $this->_windevice = "COM" . $matches[1];
-                    $this->_device = "\\.\com" . $matches[1];
                     $this->_dState = SERIAL_DEVICE_SET;
                     return true;
                 }
@@ -154,224 +128,6 @@ class Serial
     }
 
     /**
-     * Configure the Baud Rate
-     * Possible rates : 110, 150, 300, 600, 1200, 2400, 4800, 9600, 38400,
-     * 57600 and 115200.
-     *
-     * @param int $rate the rate to set the port in
-     * @return bool
-     */
-    function confBaudRate($rate)
-    {
-        if ($this->_dState !== SERIAL_DEVICE_SET) {
-            trigger_error("Unable to set the baud rate : the device is either not set or opened", E_USER_WARNING);
-            return false;
-        }
-
-        $validBauds = [
-            110 => 11,
-            150 => 15,
-            300 => 30,
-            600 => 60,
-            1200 => 12,
-            2400 => 24,
-            4800 => 48,
-            9600 => 96,
-            19200 => 19,
-            38400 => 38400,
-            57600 => 57600,
-            115200 => 115200
-        ];
-
-        if (isset($validBauds[$rate])) {
-            if ($this->_os === "linux") {
-                $ret = $this->_exec("stty -F " . $this->_device . " " . (int) $rate, $out);
-            } elseif ($this->_os === "windows") {
-                $ret = $this->_exec("mode " . $this->_windevice . " BAUD=" . $validBauds[$rate], $out);
-            } else return false;
-
-            if ($ret !== 0) {
-                trigger_error("Unable to set baud rate: " . $out[1], E_USER_WARNING);
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Configure parity.
-     * Modes : odd, even, none
-     *
-     * @param string $parity one of the modes
-     * @return bool
-     */
-    function confParity($parity)
-    {
-        if ($this->_dState !== SERIAL_DEVICE_SET) {
-            trigger_error("Unable to set parity : the device is either not set or opened", E_USER_WARNING);
-            return false;
-        }
-
-        $args = [
-            "none" => "-parenb",
-            "odd" => "parenb parodd",
-            "even" => "parenb -parodd",
-        ];
-
-        if (!isset($args[$parity])) {
-            trigger_error("Parity mode not supported", E_USER_WARNING);
-            return false;
-        }
-
-        if ($this->_os === "linux") {
-            $ret = $this->_exec("stty -F " . $this->_device . " " . $args[$parity], $out);
-        } else {
-            $ret = $this->_exec("mode " . $this->_windevice . " PARITY=" . $parity{0}, $out);
-        }
-
-        if ($ret === 0) {
-            return true;
-        }
-
-        trigger_error("Unable to set parity : " . $out[1], E_USER_WARNING);
-        return false;
-    }
-
-    /**
-     * Sets the length of a character.
-     *
-     * @param int $int length of a character (5 <= length <= 8)
-     * @return bool
-     */
-    function confCharacterLength($int)
-    {
-        if ($this->_dState !== SERIAL_DEVICE_SET) {
-            trigger_error("Unable to set length of a character : the device is either not set or opened", E_USER_WARNING);
-            return false;
-        }
-
-        $int = (int) $int;
-        if ($int < 5) $int = 5;
-        elseif ($int > 8) $int = 8;
-
-        if ($this->_os === "linux") {
-            $ret = $this->_exec("stty -F " . $this->_device . " cs" . $int, $out);
-        } else {
-            $ret = $this->_exec("mode " . $this->_windevice . " DATA=" . $int, $out);
-        }
-
-        if ($ret === 0) {
-            return true;
-        }
-
-        trigger_error("Unable to set character length : " . $out[1], E_USER_WARNING);
-        return false;
-    }
-
-    /**
-     * Sets the length of stop bits.
-     *
-     * @param float $length the length of a stop bit. It must be either 1,
-     * 1.5 or 2. 1.5 is not supported under linux and on some computers.
-     * @return bool
-     */
-    function confStopBits($length)
-    {
-        if ($this->_dState !== SERIAL_DEVICE_SET) {
-            trigger_error("Unable to set the length of a stop bit : the device is either not set or opened", E_USER_WARNING);
-            return false;
-        }
-
-        if ($length != 1 and $length != 2 and $length != 1.5 and !($length == 1.5 and $this->_os === "linux")) {
-            trigger_error("Specified stop bit length is invalid", E_USER_WARNING);
-            return false;
-        }
-
-        if ($this->_os === "linux") {
-            $ret = $this->_exec("stty -F " . $this->_device . " " . (($length == 1) ? "-" : "") . "cstopb", $out);
-        } else {
-            $ret = $this->_exec("mode " . $this->_windevice . " STOP=" . $length, $out);
-        }
-
-        if ($ret === 0) {
-            return true;
-        }
-
-        trigger_error("Unable to set stop bit length : " . $out[1], E_USER_WARNING);
-        return false;
-    }
-
-    /**
-     * Configures the flow control
-     *
-     * @param string $mode Set the flow control mode. Availible modes :
-     *  -> "none" : no flow control
-     *  -> "rts/cts" : use RTS/CTS handshaking
-     *  -> "xon/xoff" : use XON/XOFF protocol
-     * @return bool
-     */
-    function confFlowControl($mode)
-    {
-        if ($this->_dState !== SERIAL_DEVICE_SET) {
-            trigger_error("Unable to set flow control mode : the device is either not set or opened", E_USER_WARNING);
-            return false;
-        }
-
-        $linuxModes = [
-            "none" => "clocal -crtscts -ixon -ixoff",
-            "rts/cts" => "-clocal crtscts -ixon -ixoff",
-            "xon/xoff" => "-clocal -crtscts ixon ixoff"
-        ];
-        $windowsModes = [
-            "none" => "xon=off octs=off rts=on",
-            "rts/cts" => "xon=off octs=on rts=hs",
-            "xon/xoff" => "xon=on octs=off rts=on",
-        ];
-
-        if ($mode !== "none" and $mode !== "rts/cts" and $mode !== "xon/xoff") {
-            trigger_error("Invalid flow control mode specified", E_USER_ERROR);
-            return false;
-        }
-
-        if ($this->_os === "linux")
-            $ret = $this->_exec("stty -F " . $this->_device . " " . $linuxModes[$mode], $out);
-        else
-            $ret = $this->_exec("mode " . $this->_windevice . " " . $windowsModes[$mode], $out);
-
-        if ($ret === 0) return true;
-        else {
-            trigger_error("Unable to set flow control : " . $out[1], E_USER_ERROR);
-            return false;
-        }
-    }
-
-    /**
-     * Sets a setserial parameter (cf man setserial)
-     * NO MORE USEFUL !
-     *  -> No longer supported
-     *  -> Only use it if you need it
-     *
-     * @param string $param parameter name
-     * @param string $arg parameter value
-     * @return bool
-     */
-    function setSetserialFlag($param, $arg = "")
-    {
-        if (!$this->_ckOpened()) return false;
-
-        $return = exec("setserial " . $this->_device . " " . $param . " " . $arg . " 2>&1");
-
-        if ($return{0} === "I") {
-            trigger_error("setserial: Invalid flag", E_USER_WARNING);
-            return false;
-        } elseif ($return{0} === "/") {
-            trigger_error("setserial: Error with device file", E_USER_WARNING);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * Sends a string to the device
      *
      * @param string $str string to be sent to the device
@@ -416,11 +172,8 @@ class Serial
             }
 
             return $content;
-        } elseif ($this->_os === "windows") {
-            /* Do nohting : not implented yet */
         }
 
-        trigger_error("Reading serial port is not implemented for Windows", E_USER_WARNING);
         return false;
     }
 
@@ -447,16 +200,6 @@ class Serial
     {
         if ($this->_dState !== SERIAL_DEVICE_OPENED) {
             trigger_error("Device must be opened", E_USER_WARNING);
-            return false;
-        }
-
-        return true;
-    }
-
-    function _ckClosed()
-    {
-        if ($this->_dState !== SERIAL_DEVICE_CLOSED) {
-            trigger_error("Device must be closed", E_USER_WARNING);
             return false;
         }
 

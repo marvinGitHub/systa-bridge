@@ -3,13 +3,14 @@
 class SerialDeviceConfiguration
 {
     private $serialDeviceName;
- 
+
     public function __construct(string $serialDeviceName)
     {
         $this->serialDeviceName = $serialDeviceName;
     }
 
-    public function findSerialDevices() {
+    public function findSerialDevices()
+    {
         return glob('/dev/ttyUSB*');
     }
 
