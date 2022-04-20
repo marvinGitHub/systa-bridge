@@ -5,21 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7d4fcf8e-3818-4045-924e-a451f04a29e7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Helper.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/control/control" beforeDir="false" afterPath="$PROJECT_DIR$/build/control/control" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/control/postrm" beforeDir="false" afterPath="$PROJECT_DIR$/build/control/postrm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cron.php" beforeDir="false" afterPath="$PROJECT_DIR$/cron.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.php" beforeDir="false" afterPath="$PROJECT_DIR$/server.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Dump.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Dump.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Monitor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Monitor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Queue.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Queue.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Serial.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serial.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SerialDeviceConfiguration.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/SerialDeviceConfiguration.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/State.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/State.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SystaBridge.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/SystaBridge.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/autoload.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/autoload.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +70,7 @@
       <workItem from="1650208512065" duration="5705000" />
       <workItem from="1650277691107" duration="117000" />
       <workItem from="1650277854178" duration="141000" />
-      <workItem from="1650370909601" duration="8792000" />
+      <workItem from="1650370909601" duration="9984000" />
     </task>
     <servers />
   </component>

@@ -20,7 +20,7 @@ class SystaBridge
             '0a0a1d0c115345540188010735' => 'Circuit2: Set operation mode to inactive',
             SystaBridge::COMMAND_START_MONITORING_V1 => 'System: Keep Alive Packet v1 to request monitoring data',
             SystaBridge::COMMAND_START_MONITORING_V2 => 'System: Keep Alive Packet v2 to request monitoring data',
-            '0A0116DF' => '',
+            '0A0116DF' => 'Retrieve systa comfort version',
             '0A0117DE' => '',
             '0A061C0C0300022A99' => '',
             '0A061C0C0301882A12' => '',

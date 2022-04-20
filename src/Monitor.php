@@ -134,6 +134,16 @@ class Monitor
             $this->data['maintenanceContactPhone'] = trim($phone);
         }
 
+        if (0 === strpos($message, 'fd05aa0c')) {
+            $message = str_replace('fd05aa0c', '', $message);
+
+            $versionMajor = hexdec(substr($message, 0, 2));
+            $versionMinor = hexdec(substr($message, 2, 2));
+            $versionPatch = hexdec(substr($message, 4, 2));
+
+            $this->data['versionSystaComfort'] = sprintf('%u.%u.%u', $versionMajor, $versionMinor, $versionPatch);
+        }
+
         $this->save();
     }
 }
