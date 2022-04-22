@@ -70,17 +70,17 @@ echo <<<HTML
                           |___/                  |__/                           |___/     
 </pre>
 <form action="server.php" method="post">
-    <button name="command" value="getSystemConfiguration">Show System Configuration</button>
+    <button name="command" value="showMonitor">Show Monitor</button>
+    <button name="command" value="getSystemLog">Show System Log</button>    
     <button name="command" value="clearSystemLog">Clear System Log</button>
-    <button name="command" value="getSystemLog">Show System Log</button>
+    <button name="command" value="getSystemConfiguration">Show System Configuration</button>
     <button name="command" value="resetSystemConfiguration">Reset System Configuration</button>
     <button name="command" value="startMonitoring">Start Monitoring</button>
     <button name="command" value="stopMonitoring">Stop Monitoring</button>
-    <button name="command" value="showDump">Show Dump</button>
-    <button name="command" value="clearDump">Clear Dump</button>
+    <button name="command" value="showDump">Show Dump</button>    
     <button name="command" value="enableDump">Enable Dump</button>
-    <button name="command" value="disableDump">Disable Dump</button>
-    <button name="command" value="showMonitor">Show Monitor</button>
+    <button name="command" value="disableDump">Disable Dump</button> 
+    <button name="command" value="clearDump">Clear Dump</button>   
     <button name="command" value="configureSerialDevice">Configure Serial Device</button>
     <button name="command" value="showSerialDeviceConfiguration">Show Serial Device Configuration</button>
     <button name="command" value="findSerialDevices">Find Serial Devices</button>

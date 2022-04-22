@@ -7,7 +7,7 @@
     <list default="true" id="7d4fcf8e-3818-4045-924e-a451f04a29e7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/control/control" beforeDir="false" afterPath="$PROJECT_DIR$/build/control/control" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cron.php" beforeDir="false" afterPath="$PROJECT_DIR$/cron.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +72,7 @@
       <workItem from="1650370909601" duration="11132000" />
       <workItem from="1650450250817" duration="2508000" />
       <workItem from="1650539395234" duration="1466000" />
-      <workItem from="1650623092317" duration="1620000" />
+      <workItem from="1650623092317" duration="2225000" />
     </task>
     <servers />
   </component>
