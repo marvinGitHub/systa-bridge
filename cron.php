@@ -86,7 +86,7 @@ while (true) {
 
         $c = ord($incomingDataFromSerial{$i});
 
-        $translated = SystaBridge::getFixed(dechex($c), 2, "0", STR_PAD_LEFT);
+        $translated = Helper::getFixed(dechex($c), 2, "0", STR_PAD_LEFT);
         $buffer .= $translated;
 
         dump($translated);
