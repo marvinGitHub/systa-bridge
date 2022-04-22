@@ -43,16 +43,6 @@ class SystaBridge
         ];
     }
 
-    public static function getFixed(string $string, $length = 2, $padchar = "0", $type = STR_PAD_LEFT)
-    {
-        if (strlen($string) > $length) {
-            return substr($string, 0, $length);
-        } else {
-            return str_pad($string, $length, $padchar, $type);
-        }
-    }
-
-
     public static function checksum(string $hex)
     {
         $value = 0;
@@ -64,7 +54,7 @@ class SystaBridge
         $checksum = $value % 256;
 
         if ($checksum > 0) {
-            return static::getFixed(dechex(256 - $checksum));
+            return Helper::getFixed(dechex(256 - $checksum));
         }
 
         return 0;

@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="7d4fcf8e-3818-4045-924e-a451f04a29e7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/control/control" beforeDir="false" afterPath="$PROJECT_DIR$/build/control/control" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cron.php" beforeDir="false" afterPath="$PROJECT_DIR$/cron.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Monitor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Monitor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Helper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Helper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Serial.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serial.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SystaBridge.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/SystaBridge.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,20 +37,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "true",
-    "last_opened_file_path": "/Users/m_hoppe/Downloads/systa-bridge",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/m_hoppe/Downloads/systa-bridge&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/build/control" />
@@ -70,7 +72,10 @@
       <workItem from="1650208512065" duration="5705000" />
       <workItem from="1650277691107" duration="117000" />
       <workItem from="1650277854178" duration="141000" />
-      <workItem from="1650370909601" duration="9984000" />
+      <workItem from="1650370909601" duration="11132000" />
+      <workItem from="1650450250817" duration="2508000" />
+      <workItem from="1650539395234" duration="1466000" />
+      <workItem from="1650623092317" duration="1413000" />
     </task>
     <servers />
   </component>

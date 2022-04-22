@@ -49,7 +49,7 @@ function validateChecksum(string $telegram)
     $expected = substr($telegram, strlen($telegram) - 2);
 
     if ($checksum != $expected) {
-        $log->append(sprintf('Checksum mismatch. telegram: %s expected: %s actual: %s', $telegram, $expected, $checksum));
+        $log->append(sprintf('Checksum mismatch. telegram: %s expected: %s computed: %s', $telegram, $expected, $checksum));
         return false;
     }
 

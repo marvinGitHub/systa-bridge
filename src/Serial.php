@@ -1,15 +1,18 @@
 <?php
-define("SERIAL_DEVICE_NOTSET", 0);
-define("SERIAL_DEVICE_SET", 1);
-define("SERIAL_DEVICE_OPENED", 2);
 
 class Serial
 {
-    public $_device = null;
-    public $_dHandle = null;
-    public $_dState = SERIAL_DEVICE_NOTSET;
-    public $_buffer = "";
-    public $_os = "";
+    const OPERATING_SYSTEM_LINUX = 0;
+
+    const SERIAL_DEVICE_NOTSET = 0;
+    const SERIAL_DEVICE_SET = 1;
+    const SERIAL_DEVICE_OPENED = 2;
+
+    public $device = null;
+    public $handle = null;
+    public $state;
+    public $buffer = "";
+    public $operatingSystem;
 
     /**
      * This var says if buffer should be flushed by sendMessage (true) or manually (false)
@@ -23,51 +26,46 @@ class Serial
      */
     public function __construct()
     {
+        $this->state = static::SERIAL_DEVICE_NOTSET;
+
         setlocale(LC_ALL, "en_US");
 
-        $sysname = php_uname();
-
-        if (substr($sysname, 0, 5) === "Linux") {
-            $this->_os = "linux";
-            if ($this->_exec("stty --version") === 0) {
+        if (substr(php_uname(), 0, 5) === "Linux") {
+            $this->operatingSystem = static::OPERATING_SYSTEM_LINUX;
+            if ($this->execute("stty --version") === 0) {
                 register_shutdown_function([$this, "deviceClose"]);
             } else {
                 trigger_error("No stty available, unable to run.", E_USER_ERROR);
             }
         } else {
-            trigger_error("Host OS is not linux,unable tu run.", E_USER_ERROR);
+            trigger_error("Host OS is not linux, unable tu run.", E_USER_ERROR);
             exit();
         }
     }
 
     /**
-     * Device set function : used to set the device name/address.
+     * Device set public function : used to set the device name/address.
      * -> linux : use the device address, like /dev/ttyS0
      *
      * @param string $device the name of the device to be used
      * @return bool
      */
-    function deviceSet($device)
+    public function deviceSet($device)
     {
-        if ($this->_dState !== SERIAL_DEVICE_OPENED) {
-            if ($this->_os === "linux") {
-                if (preg_match("@^COM(\d+):?$@i", $device, $matches)) {
-                    $device = "/dev/ttyS" . ($matches[1] - 1);
-                }
-
-                if ($this->_exec("stty -F " . $device) === 0) {
-                    $this->_device = $device;
-                    $this->_dState = SERIAL_DEVICE_SET;
+        if ($this->state !== static::SERIAL_DEVICE_OPENED) {
+            if ($this->operatingSystem === static::OPERATING_SYSTEM_LINUX) {
+                if ($this->execute("stty -F " . $device) === 0) {
+                    $this->device = $device;
+                    $this->state = static::SERIAL_DEVICE_SET;
                     return true;
                 }
             }
 
             trigger_error("Specified serial port is not valid", E_USER_WARNING);
-            return false;
         } else {
             trigger_error("You must close your device before to set an other one", E_USER_WARNING);
-            return false;
         }
+        return false;
     }
 
     /**
@@ -76,14 +74,14 @@ class Serial
      * @param string $mode Opening mode : same parameter as fopen()
      * @return bool
      */
-    function deviceOpen($mode = "r+b")
+    public function deviceOpen($mode = "r+b")
     {
-        if ($this->_dState === SERIAL_DEVICE_OPENED) {
+        if ($this->state === static::SERIAL_DEVICE_OPENED) {
             trigger_error("The device is already opened", E_USER_NOTICE);
             return true;
         }
 
-        if ($this->_dState === SERIAL_DEVICE_NOTSET) {
+        if ($this->state === static::SERIAL_DEVICE_NOTSET) {
             trigger_error("The device must be set before to be open", E_USER_WARNING);
             return false;
         }
@@ -93,15 +91,15 @@ class Serial
             return false;
         }
 
-        $this->_dHandle = @fopen($this->_device, $mode);
+        $this->handle = @fopen($this->device, $mode);
 
-        if ($this->_dHandle !== false) {
-            stream_set_blocking($this->_dHandle, 0);
-            $this->_dState = SERIAL_DEVICE_OPENED;
+        if ($this->handle !== false) {
+            stream_set_blocking($this->handle, 0);
+            $this->state = static::SERIAL_DEVICE_OPENED;
             return true;
         }
 
-        $this->_dHandle = null;
+        $this->handle = null;
         trigger_error("Unable to open the device", E_USER_WARNING);
         return false;
     }
@@ -111,15 +109,15 @@ class Serial
      *
      * @return bool
      */
-    function deviceClose()
+    public function deviceClose()
     {
-        if ($this->_dState !== SERIAL_DEVICE_OPENED) {
+        if ($this->state !== static::SERIAL_DEVICE_OPENED) {
             return true;
         }
 
-        if (fclose($this->_dHandle)) {
-            $this->_dHandle = null;
-            $this->_dState = SERIAL_DEVICE_SET;
+        if (fclose($this->handle)) {
+            $this->handle = null;
+            $this->state = static::SERIAL_DEVICE_SET;
             return true;
         }
 
@@ -131,43 +129,43 @@ class Serial
      * Sends a string to the device
      *
      * @param string $str string to be sent to the device
-     * @param float $waitForReply time to wait for the reply (in seconds)
+     * @param float $waitForReply time to wait for the reply (in microseconds)
      */
-    function sendMessage($str, $waitForReply = 0.1)
+    public function sendMessage($str, $waitForReply = 100)
     {
-        $this->_buffer .= $str;
+        $this->buffer .= $str;
 
         if ($this->autoflush === true) $this->flush();
 
-        usleep((int) ($waitForReply * 1000000));
+        usleep((int) $waitForReply);
     }
 
     /**
-     * Reads the port until no new datas are availible, then return the content.
+     * Reads the port until no new data are available, then return the content.
      *
      * @pararm int $count number of characters to be read (will stop before
      *  if less characters are in the buffer)
      * @return string
      */
-    function readPort($count = 0)
+    public function readPort($count = 0)
     {
-        if ($this->_dState !== SERIAL_DEVICE_OPENED) {
+        if ($this->state !== static::SERIAL_DEVICE_OPENED) {
             trigger_error("Device must be opened to read it", E_USER_WARNING);
             return false;
         }
 
-        if ($this->_os === "linux") {
+        if ($this->operatingSystem === static::OPERATING_SYSTEM_LINUX) {
             $content = "";
             $i = 0;
 
             if ($count !== 0) {
                 do {
-                    if ($i > $count) $content .= fread($this->_dHandle, ($count - $i));
-                    else $content .= fread($this->_dHandle, 128);
+                    if ($i > $count) $content .= fread($this->handle, ($count - $i));
+                    else $content .= fread($this->handle, 128);
                 } while (($i += 128) === strlen($content));
             } else {
                 do {
-                    $content .= fread($this->_dHandle, 128);
+                    $content .= fread($this->handle, 128);
                 } while (($i += 128) === strlen($content));
             }
 
@@ -182,23 +180,23 @@ class Serial
      *
      * @return bool
      */
-    function flush()
+    public function flush()
     {
-        if (!$this->_ckOpened()) return false;
+        if (!$this->deviceIsOpened()) return false;
 
-        if (fwrite($this->_dHandle, $this->_buffer) !== false) {
-            $this->_buffer = "";
+        if (fwrite($this->handle, $this->buffer) !== false) {
+            $this->buffer = "";
             return true;
         } else {
-            $this->_buffer = "";
+            $this->buffer = "";
             trigger_error("Error while sending message", E_USER_WARNING);
             return false;
         }
     }
 
-    function _ckOpened()
+    public function deviceIsOpened()
     {
-        if ($this->_dState !== SERIAL_DEVICE_OPENED) {
+        if ($this->state !== static::SERIAL_DEVICE_OPENED) {
             trigger_error("Device must be opened", E_USER_WARNING);
             return false;
         }
@@ -206,7 +204,7 @@ class Serial
         return true;
     }
 
-    function _exec($cmd, &$out = null)
+    public function execute($cmd, &$out = null)
     {
         $desc = [
             1 => ["pipe", "w"],
@@ -226,5 +224,4 @@ class Serial
         if (func_num_args() == 2) $out = [$ret, $err];
         return $retVal;
     }
-
 }
