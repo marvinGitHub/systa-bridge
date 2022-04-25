@@ -6,7 +6,7 @@ Requirements:
 - Paradigma SystaComfort Controller ArticleNo. 09-7301 (only works in combination with LON Module ArticleNo. 09-7325)
 - Paradigma SystaService-Interface USB-Version ArticleNo. 09-7334
 - Paradigma SystaService USB Cable ArticleNo. 09-7337
-- TP-Link TL-WR810N v1
+- TP-Link TL-WR810N v1 running OpenWrt 19.07.9
 
 Installation
 ------------
