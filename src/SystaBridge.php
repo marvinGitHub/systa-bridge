@@ -5,7 +5,7 @@ class SystaBridge
     const COMMAND_START_MONITORING_V1 = '0a01141f';
     const COMMAND_START_MONITORING_V2 = '0a0114e1';
 
-    public function getDocumentedCommands()
+    public static function getDocumentedCommands()
     {
         return [
             '0a0a1d0c1153455400020100c3' => 'Circuit1: Set operation mode to auto (1)',
@@ -41,6 +41,12 @@ class SystaBridge
             '0A061C0C03050305B8' => '',
             '0A061C0C03050803B5' => ''
         ];
+    }
+
+    public static function isSupportedCommand(string $command)
+    {
+        return array_key_exists($command, static::getDocumentedCommands());
+
     }
 
     public static function checksum(string $hex)

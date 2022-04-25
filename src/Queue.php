@@ -38,6 +38,9 @@ class Queue
 
         $this->clear();
         foreach ($commands as $command) {
+            if (!SystaBridge::isSupportedCommand($command)) {
+                continue;
+            }
             $this->queue($command);
         }
         return $next;

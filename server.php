@@ -97,7 +97,7 @@ HTML;
             }
             $valid = $invalid = [];
             foreach (explode(',', $_POST['systaCommand']) as $systaCommand) {
-                if (array_key_exists($systaCommand, $systaBridge->getDocumentedCommands())) {
+                if (SystaBridge::isSupportedCommand($systaCommand)) {
                     $valid[] = $systaCommand;
                 } else {
                     $invalid[] = $systaCommand;

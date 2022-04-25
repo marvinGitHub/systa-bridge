@@ -8,6 +8,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/control/control" beforeDir="false" afterPath="$PROJECT_DIR$/build/control/control" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.php" beforeDir="false" afterPath="$PROJECT_DIR$/server.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Queue.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Queue.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SystaBridge.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/SystaBridge.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,7 +24,6 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Makefile" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/build/control/control" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/build/control/postinst" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -72,7 +74,9 @@
       <workItem from="1650370909601" duration="11132000" />
       <workItem from="1650450250817" duration="2508000" />
       <workItem from="1650539395234" duration="1466000" />
-      <workItem from="1650623092317" duration="2225000" />
+      <workItem from="1650623092317" duration="2298000" />
+      <workItem from="1650801612525" duration="272000" />
+      <workItem from="1650882339607" duration="382000" />
     </task>
     <servers />
   </component>

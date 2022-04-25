@@ -20,8 +20,6 @@ if (!$validated) {
 
 require 'src/autoload.php';
 
-$systaBridge = new SystaBridge();
-
 $configuration = new Configuration(__DIR__ . '/config/config.json', __DIR__ . '/config/default.json');
 if (false === $config = $configuration->load()) {
     echo 'Please check system configuration.';
@@ -53,7 +51,7 @@ $translationStateBoiler = $statesBoiler[$state->getStateBoiler()];
 $translationStateSystem = $statesSystem[$state->getStateSystem()];
 
 $blockDocumentedCommands = '';
-foreach ($systaBridge->getDocumentedCommands() as $hex => $description) {
+foreach (SystaBridge::getDocumentedCommands() as $hex => $description) {
     $blockDocumentedCommands .= <<<HTML
 <li><b>$hex</b> - $description</li>
 HTML;
