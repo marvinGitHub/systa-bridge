@@ -1,0 +1,10 @@
+{
+  "serialDevice": "/dev/ttyUSB0",
+  "logfile": "/tmp/system.log",
+  "queue": "/tmp/command.txt",
+  "dumpfile": "/tmp/dump.txt",
+  "monitoring": "false",
+  "monitor": "/tmp",
+  "dump": false,
+  "bufferLimit": 512
+}

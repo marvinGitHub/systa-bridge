@@ -52,7 +52,6 @@ $translationStateSystem = $statesSystem[$state->getStateSystem()];
 
 $blockDocumentedCommands = '';
 foreach (SystaBridge::getDocumentedCommands() as $hex => $description) {
-    $hex = strtolower($hex);
     $blockDocumentedCommands .= <<<HTML
 <li><b>$hex</b> - $description</li>
 HTML;
