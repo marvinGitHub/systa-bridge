@@ -130,7 +130,7 @@ class Monitor
                 $phone .= chr(hexdec($digit));
             }
 
-            $counterMonths = hexdec(substr($message, 8, 2));
+            $counterMonths = hexdec(substr($message, 6, 4));
             $residue = $counterMonths % 12;
 
             $month = 1 + $residue;
