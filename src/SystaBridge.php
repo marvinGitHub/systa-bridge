@@ -26,7 +26,7 @@ class SystaBridge
             '0a061c0c0301882a12' => '',
             '0a061c0c03030e09ab' => '',
             '0a061c0c0303f70fbc' => '',
-            '0a061c0c0304e612c9' => 'System: Retrieve maintenance information (phone contact)',
+            '0a061c0c0304e612c9' => 'System: Retrieve maintenance information (phone contact, date next maintenance)',
             '0a061c0c030317703b' => '',
             '0a061c0c03038770cb' => '',
             '0a061c0c030406704b' => '',

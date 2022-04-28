@@ -125,12 +125,18 @@ class Monitor
         if (0 === strpos($message, 'fd170c03')) {
             $message = str_replace('fd170c03', '', $message);
 
-            $message = substr($message, 10, 30);
             $phone = '';
-            foreach (str_split($message, 2) as $digit) {
+            foreach (str_split(substr($message, 10, 30), 2) as $digit) {
                 $phone .= chr(hexdec($digit));
             }
 
+            $counterMonths = hexdec(substr($message, 8, 2));
+            $residue = $counterMonths % 12;
+
+            $month = 1 + $residue;
+            $year = 2000 + (($counterMonths - $residue) / 12);
+
+            $this->data['maintenanceDate'] = sprintf('%s/%u', str_pad($month, 2, '0', STR_PAD_LEFT), $year);
             $this->data['maintenanceContactPhone'] = trim($phone);
         }
 
