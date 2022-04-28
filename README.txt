@@ -8,6 +8,9 @@ Requirements:
 - Paradigma SystaService USB Cable ArticleNo. 09-7337
 - TP-Link TL-WR810N v1 running OpenWrt 19.07.9
 
+Supported Systa Comfort Firmware Versions:
+- 1.32.1 (build date 29.09.2008)
+
 Installation
 ------------
 
