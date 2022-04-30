@@ -132,6 +132,23 @@ while (true) {
         $buffer = str_replace($telegram, '', $buffer);
     }
 
+    $matches = null;
+    if (1 === preg_match('/(fd2f0c0301[0-9a-f]{90})/', $buffer, $matches)) {
+        if (validateChecksum($telegram = $matches[1])) {
+            $monitor->process($telegram);
+        }
+        $buffer = str_replace($telegram, '', $buffer);
+    }
+
+    $matches = null;
+    if (1 === preg_match('/(fd2f0c0300[0-9a-f]{90})/', $buffer, $matches)) {
+        if (validateChecksum($telegram = $matches[1])) {
+            $monitor->process($telegram);
+        }
+        $buffer = str_replace($telegram, '', $buffer);
+    }
+
+
     // remove keep alive response from buffer
     if (false !== strpos($buffer, SystaBridge::COMMAND_START_MONITORING_V1)) {
         $buffer = str_replace(SystaBridge::COMMAND_START_MONITORING_V1, '', $buffer);

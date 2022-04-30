@@ -150,6 +150,18 @@ class Monitor
             $this->data['versionSystaComfort'] = sprintf('%u.%u.%u', $versionMajor, $versionMinor, $versionPatch);
         }
 
+        if (0 === strpos($message, 'fd2f0c0301')) {
+            $message = str_replace('fd2f0c0301', '', $message);
+
+            $this->data['baseCircuit2'] = hexdec(substr($message, 32, 4)) * 0.1;
+        }
+
+        if (0 === strpos($message, 'fd2f0c0300')) {
+            $message = str_replace('fd2f0c0300', '', $message);
+
+            $this->data['baseCircuit1'] = hexdec(substr($message, 32, 4)) * 0.1;
+        }
+
         $this->save();
     }
 }
