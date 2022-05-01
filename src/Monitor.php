@@ -155,8 +155,9 @@ class Monitor
 
             $heatingInformation = $this->getHeatingInformation($message);
 
-            $this->data['baseCircuit2'] = $heatingInformation['base'];
-            $this->data['spreadCircuit2'] = $heatingInformation['spread'];
+            $this->data['basePointCircuit2'] = $heatingInformation['basePoint'];
+            $this->data['steepnessCircuit2'] = $heatingInformation['steepness'];
+            $this->data['temperatureMaxFlowCircuit2'] = $heatingInformation['temperatureMaxFlow'];
         }
 
         if (0 === strpos($message, 'fd2f0c0300')) {
@@ -164,8 +165,9 @@ class Monitor
 
             $heatingInformation = $this->getHeatingInformation($message);
 
-            $this->data['baseCircuit1'] = $heatingInformation['base'];
-            $this->data['spreadCircuit1'] = $heatingInformation['spread'];
+            $this->data['basePointCircuit1'] = $heatingInformation['basePoint'];
+            $this->data['steepnessCircuit1'] = $heatingInformation['steepness'];
+            $this->data['temperatureMaxFlowCircuit1'] = $heatingInformation['temperatureMaxFlow'];
         }
 
         $this->save();
@@ -174,8 +176,9 @@ class Monitor
     private function getHeatingInformation(string $message)
     {
         return [
-            'base' => hexdec(substr($message, 32, 4)) * 0.1,
-            'spread' => hexdec(substr($message, 36, 4)) * 0.1
+            'basePoint' => hexdec(substr($message, 32, 4)) * 0.1,
+            'steepness' => hexdec(substr($message, 36, 4)) * 0.1,
+            'temperatureMaxFlow' => hexdec(substr($message, 42, 4)) * 0.1,
         ];
     }
 }
