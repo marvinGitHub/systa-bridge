@@ -153,15 +153,29 @@ class Monitor
         if (0 === strpos($message, 'fd2f0c0301')) {
             $message = str_replace('fd2f0c0301', '', $message);
 
-            $this->data['baseCircuit2'] = hexdec(substr($message, 32, 4)) * 0.1;
+            $heatingInformation = $this->getHeatingInformation($message);
+
+            $this->data['baseCircuit2'] = $heatingInformation['base'];
+            $this->data['spreadCircuit2'] = $heatingInformation['spread'];
         }
 
         if (0 === strpos($message, 'fd2f0c0300')) {
             $message = str_replace('fd2f0c0300', '', $message);
 
-            $this->data['baseCircuit1'] = hexdec(substr($message, 32, 4)) * 0.1;
+            $heatingInformation = $this->getHeatingInformation($message);
+
+            $this->data['baseCircuit1'] = $heatingInformation['base'];
+            $this->data['spreadCircuit1'] = $heatingInformation['spread'];
         }
 
         $this->save();
+    }
+
+    private function getHeatingInformation(string $message)
+    {
+        return [
+            'base' => hexdec(substr($message, 32, 4)) * 0.1,
+            'spread' => hexdec(substr($message, 36, 4)) * 0.1
+        ];
     }
 }
