@@ -153,21 +153,27 @@ class Monitor
         if (0 === strpos($message, 'fd2f0c0301')) {
             $message = str_replace('fd2f0c0301', '', $message);
 
-            $heatingInformation = $this->getHeatingInformation($message);
+            $data = $this->getHeatingInformation($message);
 
-            $this->data['basePointCircuit2'] = $heatingInformation['basePoint'];
-            $this->data['steepnessCircuit2'] = $heatingInformation['steepness'];
-            $this->data['temperatureMaxFlowCircuit2'] = $heatingInformation['temperatureMaxFlow'];
+            $this->data['basePointCircuit2'] = $data['basePoint'];
+            $this->data['steepnessCircuit2'] = $data['steepness'];
+            $this->data['spreadCircuit2'] = $data['spread'];
+            $this->data['temperatureMaxFlowCircuit2'] = $data['temperatureMaxFlow'];
+            $this->data['temperatureHeatLimitNormalOperationCircuit2'] = $data['temperatureHeatLimitNormalOperation'];
+            $this->data['timeMinutesPreheatCircuit2'] = $data['timeMinutesPreheat'];
         }
 
         if (0 === strpos($message, 'fd2f0c0300')) {
             $message = str_replace('fd2f0c0300', '', $message);
 
-            $heatingInformation = $this->getHeatingInformation($message);
+            $data = $this->getHeatingInformation($message);
 
-            $this->data['basePointCircuit1'] = $heatingInformation['basePoint'];
-            $this->data['steepnessCircuit1'] = $heatingInformation['steepness'];
-            $this->data['temperatureMaxFlowCircuit1'] = $heatingInformation['temperatureMaxFlow'];
+            $this->data['basePointCircuit1'] = $data['basePoint'];
+            $this->data['steepnessCircuit1'] = $data['steepness'];
+            $this->data['spreadCircuit1'] = $data['spread'];
+            $this->data['temperatureMaxFlowCircuit1'] = $data['temperatureMaxFlow'];
+            $this->data['temperatureHeatLimitNormalOperationCircuit1'] = $data['temperatureHeatLimitNormalOperation'];
+            $this->data['timeMinutesPreheatCircuit1'] = $data['timeMinutesPreheat'];
         }
 
         $this->save();
@@ -178,7 +184,10 @@ class Monitor
         return [
             'basePoint' => hexdec(substr($message, 32, 4)) * 0.1,
             'steepness' => hexdec(substr($message, 36, 4)) * 0.1,
+            'spread' => hexdec(substr($message, 76, 4)) * 0.1,
             'temperatureMaxFlow' => hexdec(substr($message, 42, 4)) * 0.1,
+            'temperatureHeatLimitNormalOperation' => hexdec(substr($message, 58, 4)) * 0.1,
+            'timeMinutesPreheat' => hexdec(substr($message, 70,2))
         ];
     }
 }
