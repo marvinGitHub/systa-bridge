@@ -10,7 +10,7 @@ class Monitor
         $this->directory = $directory;
     }
 
-    private function getPathname()
+    private function getPathname(): string
     {
         return $this->directory . '/monitor.txt';
     }
@@ -21,13 +21,16 @@ class Monitor
         $this->data = [];
     }
 
-    public function load()
+    public function load(): array
     {
         $data = @json_decode(file_get_contents($this->getPathname()), true);
-        if ($data) {
-            return $data;
+
+        if (!is_array($data)) {
+            return [];
         }
-        return [];
+
+        ksort($data);
+        return $data;
     }
 
     public function save()
@@ -66,8 +69,8 @@ class Monitor
             $this->data['temperatureHotWater'] = hexdec(substr($message, 12, 4)) * 0.1;
             $this->data['temperatureFlowBoiler'] = hexdec(substr($message, 16, 4)) * 0.1;
             $this->data['temperatureReturnBoiler'] = hexdec(substr($message, 20, 4)) * 0.1;
-            $this->data['temperatureActualRoomCircuit1'] = hexdec(substr($message, 24, 4)) * 0.1;
-            $this->data['temperatureActualRoomCircuit2'] = hexdec(substr($message, 28, 4)) * 0.1;
+            $this->data['temperatureRoomCircuit1'] = hexdec(substr($message, 24, 4)) * 0.1;
+            $this->data['temperatureRoomCircuit2'] = hexdec(substr($message, 28, 4)) * 0.1;
             $this->data['temperatureFlowCircuit1'] = hexdec(substr($message, 32, 4)) * 0.1;
             $this->data['temperatureFlowCircuit2'] = hexdec(substr($message, 36, 4)) * 0.1;
             $this->data['temperatureReturnCircuit1'] = hexdec(substr($message, 40, 4)) * 0.1;
