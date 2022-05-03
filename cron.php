@@ -42,7 +42,7 @@ function sendSystaCommand($command)
     dump($command);
 }
 
-function validateChecksum(string $telegram)
+function validateChecksum(string $telegram): bool
 {
     global $log;
     $checksum = SystaBridge::checksum(substr($telegram, 0, strlen($telegram) - 2));
@@ -54,6 +54,26 @@ function validateChecksum(string $telegram)
     }
 
     return true;
+}
+
+function determineTelegram(string $value): ?string
+{
+    $matches = null;
+    $isTelegram =
+        1 === preg_match('/(fc200c01[\da-f]{62})/', $value, $matches) ||
+        1 === preg_match('/(fc220c02[\da-f]{66})/', $value, $matches) ||
+        1 === preg_match('/(fd170c03[\da-f]{60})/', $value, $matches) ||
+        1 === preg_match('/(fd05aa0c[\da-f]{8})/', $value, $matches) ||
+        1 === preg_match('/(fd2f0c0301[\da-f]{90})/', $value, $matches) ||
+        1 === preg_match('/(fd2f0c0300[\da-f]{90})/', $value, $matches) ||
+        1 === preg_match(sprintf('/(%s)/', SystaBridge::COMMAND_START_MONITORING_V1), $value, $matches) ||
+        1 === preg_match(sprintf('/(%s)/', SystaBridge::COMMAND_START_MONITORING_V2), $value, $matches);
+
+    if (!$isTelegram) {
+        return null;
+    }
+
+    return $matches[1];
 }
 
 $keepAliveCounter = null;
@@ -80,13 +100,13 @@ while (true) {
         }
     }
 
-    $incomingDataFromSerial = $serial->readPort();
+    $dataSerial = $serial->readPort();
 
-    for ($i = 0; $i < strlen($incomingDataFromSerial); $i++) {
+    for ($i = 0; $i < strlen($dataSerial); $i++) {
 
-        $c = ord($incomingDataFromSerial{$i});
+        $c = ord($dataSerial{$i});
 
-        $translated = Helper::getFixed(dechex($c), 2, "0", STR_PAD_LEFT);
+        $translated = Helper::getFixed(dechex($c));
         $buffer .= $translated;
 
         dump($translated);
@@ -100,61 +120,10 @@ while (true) {
 
     dump(PHP_EOL);
 
-    $matches = null;
-    if (1 === preg_match('/(fc200c01[0-9a-f]{62})/', $buffer, $matches)) {
-        if (validateChecksum($telegram = $matches[1])) {
+    if (null !== $telegram = determineTelegram($buffer)) {
+        if (validateChecksum($telegram)) {
             $monitor->process($telegram);
         }
         $buffer = str_replace($telegram, '', $buffer);
-    }
-
-    $matches = null;
-    if (1 === preg_match('/(fc220c02[0-9a-f]{66})/', $buffer, $matches)) {
-        if (validateChecksum($telegram = $matches[1])) {
-            $monitor->process($telegram);
-        }
-        $buffer = str_replace($telegram, '', $buffer);
-    }
-
-    $matches = null;
-    if (1 === preg_match('/(fd170c03[0-9a-f]{60})/', $buffer, $matches)) {
-        if (validateChecksum($telegram = $matches[1])) {
-            $monitor->process($telegram);
-        }
-        $buffer = str_replace($telegram, '', $buffer);
-    }
-
-    $matches = null;
-    if (1 === preg_match('/(fd05aa0c[0-9a-f]{8})/', $buffer, $matches)) {
-        if (validateChecksum($telegram = $matches[1])) {
-            $monitor->process($telegram);
-        }
-        $buffer = str_replace($telegram, '', $buffer);
-    }
-
-    $matches = null;
-    if (1 === preg_match('/(fd2f0c0301[0-9a-f]{90})/', $buffer, $matches)) {
-        if (validateChecksum($telegram = $matches[1])) {
-            $monitor->process($telegram);
-        }
-        $buffer = str_replace($telegram, '', $buffer);
-    }
-
-    $matches = null;
-    if (1 === preg_match('/(fd2f0c0300[0-9a-f]{90})/', $buffer, $matches)) {
-        if (validateChecksum($telegram = $matches[1])) {
-            $monitor->process($telegram);
-        }
-        $buffer = str_replace($telegram, '', $buffer);
-    }
-
-
-    // remove keep alive response from buffer
-    if (false !== strpos($buffer, SystaBridge::COMMAND_START_MONITORING_V1)) {
-        $buffer = str_replace(SystaBridge::COMMAND_START_MONITORING_V1, '', $buffer);
-    }
-
-    if (false !== strpos($buffer, SystaBridge::COMMAND_START_MONITORING_V2)) {
-        $buffer = str_replace(SystaBridge::COMMAND_START_MONITORING_V2, '', $buffer);
     }
 }
