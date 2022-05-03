@@ -1,5 +1,5 @@
 #!/bin/sh
-[ -f /tmp/cron.log ] && rm /tmp/cron.log
+[ -f /tmp/consumer.log ] && rm /tmp/consumer.log
 [ -f /tmp/webserver.log ] && rm /tmp/webserver.log
 [ -f /tmp/system.log ] && rm /tmp/system.log
 [ -f /tmp/monitor.txt ] && rm /tmp/monitor.txt

@@ -106,10 +106,10 @@ while (true) {
 
         $c = ord($dataSerial{$i});
 
-        $translated = Helper::getFixed(dechex($c));
-        $buffer .= $translated;
+        $hex = Helper::getFixed(dechex($c));
+        $buffer .= $hex;
 
-        dump($translated);
+        dump($hex);
 
         if (strlen($buffer) === $config['bufferLimit']) {
             $log->append('Buffer: limit reached');

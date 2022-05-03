@@ -1,1 +1,0 @@
-0-59 * * * * sh /root/systa-bridge/cron/systa-bridge/start.sh >> /tmp/cron.log

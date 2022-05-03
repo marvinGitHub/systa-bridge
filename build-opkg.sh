@@ -13,14 +13,14 @@ cp -r ./cron ./build/data/root/systa-bridge/
 cp -r ./src ./build/data/root/systa-bridge/
 cp -r ./config ./build/data/root/systa-bridge/
 
-cp ./cron.php ./build/data/root/systa-bridge/
+cp ./consume.php ./build/data/root/systa-bridge/
 cp ./server.php ./build/data/root/systa-bridge/
 cp ./index.php ./build/data/root/systa-bridge/
 
 cp ./config/logrotate.conf ./build/data/etc/logrotate.conf.d/systa-bridge
 
 cp ./cron/logrotate/logrotate ./build/data/usr/lib/micron.d/
-cp ./cron/systa-bridge/systa-bridge ./build/data/usr/lib/micron.d/
+cp ./cron/consumer/consumer ./build/data/usr/lib/micron.d/
 cp ./cron/webserver/webserver ./build/data/usr/lib/micron.d/
 
 rm ./build/data/root/systa-bridge/config/logrotate.conf
