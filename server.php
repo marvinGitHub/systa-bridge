@@ -29,11 +29,12 @@ try {
     ];
     sort($supportedCommands);
 
-    function stdout($content)
+    function stdout(string $content, bool $formatted = true)
     {
-        echo <<<HTML
-<pre>$content</pre>
-HTML;
+        if ($formatted) {
+            $content = sprintf('<pre>%s</pre>', $content);
+        }
+        echo $content;
     }
 
     if (!isset($_POST['command'])) {
@@ -135,7 +136,8 @@ HTML;
                 $log->append($message);
                 exit;
             }
-            stdout(json_encode($page, JSON_PRETTY_PRINT));
+            header('Content-Type: application/json');
+            stdout(json_encode($page, JSON_PRETTY_PRINT), false);
             exit;
         case 'showDump':
             $log->append('Load dump');
