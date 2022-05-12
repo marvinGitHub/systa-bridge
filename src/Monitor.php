@@ -38,8 +38,7 @@ class Monitor
         return file_put_contents($this->getPathname(), json_encode($this->data, JSON_PRETTY_PRINT));
     }
 
-
-    public function getErrorCodes()
+    public function getErrorCodes(): array
     {
         $errorCodes = [null, null];
 
@@ -87,7 +86,6 @@ class Monitor
             $message = str_replace('fc220c02', '', $message);
 
             $states = hexdec(substr($message, 24, 4));
-
 
             $this->data['timestamp'] = time();
             $this->data['temperatureSetRoomCircuit1'] = hexdec(substr($message, 0, 4)) * 0.1;
@@ -179,7 +177,7 @@ class Monitor
             $this->data['timeMinutesPreheatCircuit1'] = $data['timeMinutesPreheat'];
         }
 
-        $this->applyMonitorCorrections();
+        $this->applyCorrections();
         $this->save();
     }
 
@@ -195,13 +193,13 @@ class Monitor
         ];
     }
 
-    private function applyMonitorCorrections()
+    private function applyCorrections()
     {
         if ($this->data['errorCodeBoiler'] === 65535) {
             $this->data['errorCodeBoiler'] = 0;
         }
 
-        if ($this->data['temperatureBufferBottom'] === 6524.7) {
+        if (((int)($this->data['temperatureBufferBottom'] * 10)) === 65247) {
             $this->data['temperatureBufferBottom'] = 0;
         }
     }
