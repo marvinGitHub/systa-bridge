@@ -46,7 +46,7 @@ class Monitor
         $data = $this->load();
 
         if (isset($data['errorCodeBoiler'])) {
-            $errorCodes[0] = $data['errorCodeBoiler'] === 65535 ? 0 : $data['errorCodeBoiler'];
+            $errorCodes[0] = $data['errorCodeBoiler'];
         }
 
         if (isset($data['errorCodeSensor'])) {
@@ -179,6 +179,7 @@ class Monitor
             $this->data['timeMinutesPreheatCircuit1'] = $data['timeMinutesPreheat'];
         }
 
+        $this->applyMonitorCorrections();
         $this->save();
     }
 
@@ -190,7 +191,18 @@ class Monitor
             'spread' => hexdec(substr($message, 76, 4)) * 0.1,
             'temperatureMaxFlow' => hexdec(substr($message, 42, 4)) * 0.1,
             'temperatureHeatLimitNormalOperation' => hexdec(substr($message, 58, 4)) * 0.1,
-            'timeMinutesPreheat' => hexdec(substr($message, 70,2))
+            'timeMinutesPreheat' => hexdec(substr($message, 70, 2))
         ];
+    }
+
+    private function applyMonitorCorrections()
+    {
+        if ($this->data['errorCodeBoiler'] === 65535) {
+            $this->data['errorCodeBoiler'] = 0;
+        }
+
+        if ($this->data['temperatureBufferBottom'] === 6524.7) {
+            $this->data['temperatureBufferBottom'] = 0;
+        }
     }
 }
