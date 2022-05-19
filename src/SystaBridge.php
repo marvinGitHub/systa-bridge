@@ -25,7 +25,7 @@ class SystaBridge
             '0a061c0c0300022a99' => 'Circuit1: Retrieve heating information',
             '0a061c0c0301882a12' => 'Circuit2: Retrieve heating information',
             '0a061c0c03030e09ab' => '',
-            '0a061c0c0303f70fbc' => '',
+            '0a061c0c0303f70fbc' => 'Circulation: Retrieve information',
             '0a061c0c0304e612c9' => 'System: Retrieve maintenance information (phone contact, date next maintenance)',
             '0a061c0c030317703b' => '',
             '0a061c0c03038770cb' => '',

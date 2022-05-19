@@ -177,6 +177,14 @@ class Monitor
             $this->data['timeMinutesPreheatCircuit1'] = $data['timeMinutesPreheat'];
         }
 
+        if (0 === strpos($message, 'fd140c03')) {
+            $message = str_replace('fd140c03', '', $message);
+
+            $this->data['circulationPumpDelayTimeMinutes'] = hexdec(substr($message, 28, 2));
+            $this->data['circulationButtonLockTimeMinutes'] = hexdec(substr($message, 30, 2));
+            $this->data['circulationPumpDifferentialGap'] = hexdec(substr($message, 34, 2)) * 0.1;
+        }
+
         $this->applyCorrections();
         $this->save();
     }
