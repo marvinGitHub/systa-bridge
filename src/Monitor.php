@@ -186,6 +186,7 @@ class Monitor
         }
 
         $this->applyCorrections();
+        $this->filterDeactivatedCircuitValues();
         $this->save();
     }
 
@@ -209,6 +210,29 @@ class Monitor
 
         if (((int)($this->data['temperatureBufferBottom'] * 10)) === 65247) {
             $this->data['temperatureBufferBottom'] = 0;
+        }
+    }
+
+    public function isActivatedCircuit1() : bool
+    {
+        return isset($this->data['operationModeCircuit1']) && $this->data['operationModeCircuit1'] !== 7;
+    }
+
+    public function isActivatedCircuit2() : bool
+    {
+        return isset($this->data['operationModeCircuit2']) && $this->data['operationModeCircuit2'] !== 7;
+    }
+
+    private function filterDeactivatedCircuitValues()
+    {
+        foreach ($this->data as $key => $value) {
+            if (!$this->isActivatedCircuit1() && false !== stripos($key, 'circuit1')) {
+                unset($this->data[$key]);
+            }
+
+            if (!$this->isActivatedCircuit2() && false !== stripos($key, 'circuit2')) {
+                unset($this->data[$key]);
+            }
         }
     }
 }
