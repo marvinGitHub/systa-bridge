@@ -120,7 +120,10 @@ class Monitor
             $this->data['powerSetPumpCircuit1'] = hexdec(substr($message, 58, 2));
             $this->data['powerSetPumpCircuit2'] = hexdec(substr($message, 60, 2));
             $this->data['powerSetPumpBoiler'] = hexdec(substr($message, 62, 2));
-            $this->data['averageOperationTimeMinutes'] = round(($this->data['operationTimeHoursBoiler'] / $this->data['counterBoilerStart']) * 60, 0);
+
+            if ($this->data['operationTimeHoursBoiler'] && $this->data['counterBoilerStart']) {
+                $this->data['averageOperationTimeMinutes'] = round(($this->data['operationTimeHoursBoiler'] / $this->data['counterBoilerStart']) * 60, 0);
+            }
         }
 
         if (0 === strpos($message, 'fd170c03')) {
@@ -213,12 +216,12 @@ class Monitor
         }
     }
 
-    public function isActivatedCircuit1() : bool
+    public function isActivatedCircuit1(): bool
     {
         return isset($this->data['operationModeCircuit1']) && $this->data['operationModeCircuit1'] !== 7;
     }
 
-    public function isActivatedCircuit2() : bool
+    public function isActivatedCircuit2(): bool
     {
         return isset($this->data['operationModeCircuit2']) && $this->data['operationModeCircuit2'] !== 7;
     }
