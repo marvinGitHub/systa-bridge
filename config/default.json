@@ -6,5 +6,8 @@
   "monitoring": "false",
   "monitor": "/tmp",
   "dump": false,
-  "bufferLimit": 512
+  "bufferLimit": 512,
+  "automaticDesinfection": false,
+  "intervalAutomaticDesinfection": 604800,
+  "storagePath": "/tmp/storage.txt"
 }

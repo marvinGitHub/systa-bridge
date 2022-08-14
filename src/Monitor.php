@@ -55,7 +55,6 @@ class Monitor
         return $errorCodes;
     }
 
-
     public function process(string $message)
     {
         // Systa Comfort, Monitordatensatz 1
@@ -120,10 +119,6 @@ class Monitor
             $this->data['powerSetPumpCircuit1'] = hexdec(substr($message, 58, 2));
             $this->data['powerSetPumpCircuit2'] = hexdec(substr($message, 60, 2));
             $this->data['powerSetPumpBoiler'] = hexdec(substr($message, 62, 2));
-
-            if ($this->data['operationTimeHoursBoiler'] && $this->data['counterBoilerStart']) {
-                $this->data['averageOperationTimeMinutes'] = round(($this->data['operationTimeHoursBoiler'] / $this->data['counterBoilerStart']) * 60, 0);
-            }
         }
 
         if (0 === strpos($message, 'fd170c03')) {
@@ -188,12 +183,20 @@ class Monitor
             $this->data['circulationPumpDifferentialGap'] = hexdec(substr($message, 34, 2)) * 0.1;
         }
 
+        $this->calculateValues();
         $this->applyCorrections();
         $this->filterDeactivatedCircuitValues();
         $this->save();
     }
 
-    private function getHeatingInformation(string $message)
+    private function calculateValues()
+    {
+        if ($this->data['operationTimeHoursBoiler'] && $this->data['counterBoilerStart']) {
+            $this->data['averageOperationTimeMinutes'] = round(($this->data['operationTimeHoursBoiler'] / $this->data['counterBoilerStart']) * 60, 0);
+        }
+    }
+
+    private function getHeatingInformation(string $message): array
     {
         return [
             'basePoint' => hexdec(substr($message, 32, 4)) * 0.1,
@@ -224,6 +227,26 @@ class Monitor
     public function isActivatedCircuit2(): bool
     {
         return isset($this->data['operationModeCircuit2']) && $this->data['operationModeCircuit2'] !== 7;
+    }
+
+    public function getOperationModeCircuit1()
+    {
+        return $this->data['operationModeCircuit1'] ?? null;
+    }
+
+    public function getOperationModeCircuit2()
+    {
+        return $this->data['operationModeCircuit2'] ?? null;
+    }
+
+    public function getTemperatureHotWater()
+    {
+        return $this->data['temperatureHotWater'] ?? null;
+    }
+
+    public function getTemperatureSetHotWater()
+    {
+        return $this->data['temperatureSetHotWater'] ?? null;
     }
 
     private function filterDeactivatedCircuitValues()

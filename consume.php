@@ -23,6 +23,9 @@ $serial->deviceOpen();
 
 $queue = new Queue($config['queue']);
 $dump = new Dump($config['dumpfile']);
+$storage = new KeyValueStorage($config['storagePath']);
+
+$pluginAutomaticDesinfection = new PluginAutomaticDesinfection($storage, $monitor, $queue, $log, $config['intervalAutomaticDesinfection']);
 
 function dump(string $data)
 {
@@ -127,4 +130,6 @@ while (true) {
         }
         $buffer = str_replace($telegram, '', $buffer);
     }
+
+    $pluginAutomaticDesinfection->run();
 }
