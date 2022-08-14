@@ -36,12 +36,12 @@ class PluginAutomaticDesinfection
         }
     }
 
-    private function getTimestampNextDesinfection()
+    public function getTimestampNextDesinfection()
     {
         return $this->storage->get(sprintf('%s.timestampNextDesinfection', self::class));
     }
 
-    public function setTimestampNextDesinfection(int $timestamp)
+    private function setTimestampNextDesinfection(int $timestamp)
     {
         return $this->storage->set(sprintf('%s.timestampNextDesinfection', self::class), $timestamp);
     }
@@ -58,16 +58,18 @@ class PluginAutomaticDesinfection
 
     private function getPreviousOperationModeCircuit1()
     {
-        return $this->storage->set(sprintf('%s.operationModeCircuit1', self::class));
+        return $this->storage->get(sprintf('%s.operationModeCircuit1', self::class));
     }
 
     private function getPreviousOperationModeCircuit2()
     {
-        return $this->storage->set(sprintf('%s.operationModeCircuit2', self::class));
+        return $this->storage->get(sprintf('%s.operationModeCircuit2', self::class));
     }
 
     public function run()
     {
+        $this->monitor->set('timestampNextDesinfection', $this->getTimestampNextDesinfection());
+
         // enable desinfection (comfort mode of circuit will be used for hot water settings)
         if (time() >= $this->getTimestampNextDesinfection()) {
             $this->storeOperationModeCircuit1($this->monitor->getOperationModeCircuit1());

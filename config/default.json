@@ -9,5 +9,5 @@
   "bufferLimit": 512,
   "automaticDesinfection": false,
   "intervalAutomaticDesinfection": 604800,
-  "storagePath": "/tmp/storage.txt"
+  "storagePath": "/tmp"
 }

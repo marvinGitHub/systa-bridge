@@ -10,6 +10,14 @@ class Monitor
         $this->directory = $directory;
     }
 
+    public function set(string $key, $value)
+    {
+        if (!is_scalar($value)) {
+            return;
+        }
+        $this->data[$key] = $value;
+    }
+
     private function getPathname(): string
     {
         return $this->directory . '/monitor.txt';
