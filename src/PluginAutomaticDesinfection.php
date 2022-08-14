@@ -72,11 +72,20 @@ class PluginAutomaticDesinfection
 
         // enable desinfection (comfort mode of circuit will be used for hot water settings)
         if (time() >= $this->getTimestampNextDesinfection()) {
-            $this->storeOperationModeCircuit1($this->monitor->getOperationModeCircuit1());
-            $this->storeOperationModeCircuit2($this->monitor->getOperationModeCircuit2());
+            $this->log->append('Automatic Desinfection: Started');
+
+            $operationModeCircuit1 = $this->monitor->getOperationModeCircuit1();
+            $operationModeCircuit2 = $this->monitor->getOperationModeCircuit2();
+
+            $this->log->append(sprintf('Automatic Desinfection: Operation Mode Circuit1: %u', $operationModeCircuit1));
+            $this->log->append(sprintf('Automatic Desinfection: Operation Mode Circuit2: %u', $operationModeCircuit2));
+
+            $this->storeOperationModeCircuit1($operationModeCircuit1);
+            $this->storeOperationModeCircuit2($operationModeCircuit2);
 
             $this->queue->queue(SystaBridge::COMMAND_CIRCUIT1_COMFORT);
             $this->queue->queue(SystaBridge::COMMAND_CIRCUIT2_COMFORT);
+
             $this->setTimestampNextDesinfection(time() + $this->interval);
         }
 
@@ -96,6 +105,8 @@ class PluginAutomaticDesinfection
             } else {
                 $this->log->append(sprintf('Error: Circuit2: unable to restore previous operation mode (%u).', $previousOperationModeCircuit2));
             }
+
+            $this->log->append('Automatic Desinfection: Stopped');
         }
     }
 }
