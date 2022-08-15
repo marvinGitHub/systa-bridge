@@ -40,4 +40,9 @@ class KeyValueStorage
 
         return unserialize($data);
     }
+
+    public function clear(string $key): bool
+    {
+        return @unlink($this->resolvePath($key));
+    }
 }

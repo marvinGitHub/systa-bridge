@@ -131,5 +131,7 @@ while (true) {
         $buffer = str_replace($telegram, '', $buffer);
     }
 
-    $pluginAutomaticDesinfection->run();
+    if ($config['automaticDesinfection']) {
+        $pluginAutomaticDesinfection->run();
+    }
 }

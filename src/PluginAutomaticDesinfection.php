@@ -2,6 +2,10 @@
 
 class PluginAutomaticDesinfection
 {
+    const STORAGE_KEY_OPERATION_MODE_CIRCUIT1 = 'PluginAutomaticDesinfection.operationModeCircuit1';
+    const STORAGE_KEY_OPERATION_MODE_CIRCUIT2 = 'PluginAutomaticDesinfection.operationModeCircuit2';
+    const STORAGE_KEY_TIMESTAMP_NEXT_DESINFECTION = 'PluginAutomaticDesinfection.timestampNextDesinfection';
+
     private $storage;
     private $monitor;
     private $interval;
@@ -38,44 +42,48 @@ class PluginAutomaticDesinfection
 
     public function getTimestampNextDesinfection()
     {
-        return $this->storage->get(sprintf('%s.timestampNextDesinfection', self::class));
+        return $this->storage->get(self::STORAGE_KEY_TIMESTAMP_NEXT_DESINFECTION);
     }
 
     private function setTimestampNextDesinfection(int $timestamp)
     {
-        return $this->storage->set(sprintf('%s.timestampNextDesinfection', self::class), $timestamp);
+        return $this->storage->set(self::STORAGE_KEY_TIMESTAMP_NEXT_DESINFECTION, $timestamp);
     }
 
     private function storeOperationModeCircuit1($operationMode): void
     {
-        $this->storage->set(sprintf('%s.operationModeCircuit1', self::class), $operationMode);
+        $this->storage->set(self::STORAGE_KEY_OPERATION_MODE_CIRCUIT1, $operationMode);
     }
 
     private function storeOperationModeCircuit2($operationMode): void
     {
-        $this->storage->set(sprintf('%s.operationModeCircuit2', self::class), $operationMode);
+        $this->storage->set(self::STORAGE_KEY_OPERATION_MODE_CIRCUIT2, $operationMode);
     }
 
     private function getPreviousOperationModeCircuit1()
     {
-        return $this->storage->get(sprintf('%s.operationModeCircuit1', self::class));
+        return $this->storage->get(self::STORAGE_KEY_OPERATION_MODE_CIRCUIT1);
     }
 
     private function getPreviousOperationModeCircuit2()
     {
-        return $this->storage->get(sprintf('%s.operationModeCircuit2', self::class));
+        return $this->storage->get(self::STORAGE_KEY_OPERATION_MODE_CIRCUIT2);
     }
 
     public function run()
     {
+        $operationModeCircuit1 = $this->monitor->getOperationModeCircuit1();
+        $operationModeCircuit2 = $this->monitor->getOperationModeCircuit2();
+
+        if ($operationModeCircuit1 === null || $operationModeCircuit2 === null) {
+            return;
+        }
+
         $this->monitor->set('timestampNextDesinfection', $this->getTimestampNextDesinfection());
 
         // enable desinfection (comfort mode of circuit will be used for hot water settings)
         if (time() >= $this->getTimestampNextDesinfection()) {
             $this->log->append('Automatic Desinfection: Started');
-
-            $operationModeCircuit1 = $this->monitor->getOperationModeCircuit1();
-            $operationModeCircuit2 = $this->monitor->getOperationModeCircuit2();
 
             $this->log->append(sprintf('Automatic Desinfection: Operation Mode Circuit1: %u', $operationModeCircuit1));
             $this->log->append(sprintf('Automatic Desinfection: Operation Mode Circuit2: %u', $operationModeCircuit2));
@@ -89,24 +97,29 @@ class PluginAutomaticDesinfection
             $this->setTimestampNextDesinfection(time() + $this->interval);
         }
 
-        // fallback to previous operation mode
+        // fallback to previous operation mode if hot water temperature set is reached
         if ($this->monitor->getTemperatureHotWater() >= $this->monitor->getTemperatureSetHotWater() - $this->temperatureDifferenceCelsius) {
 
-            // restore circuit1
-            if (array_key_exists($previousOperationModeCircuit1 = $this->getPreviousOperationModeCircuit1())) {
-                $this->queue->queue($this->mappingOperationModesCircuit1[$previousOperationModeCircuit1]);
-            } else {
-                $this->log->append(sprintf('Error: Circuit1: unable to restore previous operation mode (%u).', $previousOperationModeCircuit1));
+            $previousOperationModeCircuit1 = $this->getPreviousOperationModeCircuit1();
+            $previousOperationModeCircuit2 = $this->getPreviousOperationModeCircuit2();
+
+            if (null !== $previousOperationModeCircuit1) {
+                if (array_key_exists($previousOperationModeCircuit1, $this->mappingOperationModesCircuit1)) {
+                    $this->queue->queue($this->mappingOperationModesCircuit1[$previousOperationModeCircuit1]);
+                    $this->storage->clear(self::STORAGE_KEY_OPERATION_MODE_CIRCUIT1);
+                } else {
+                    $this->log->append(sprintf('Error: Circuit1: unable to restore previous operation mode (%u).', $previousOperationModeCircuit1));
+                }
             }
 
-            // restore circuit2
-            if (array_key_exists($previousOperationModeCircuit2 = $this->getPreviousOperationModeCircuit2())) {
-                $this->queue->queue($this->mappingOperationModesCircuit2[$previousOperationModeCircuit2]);
-            } else {
-                $this->log->append(sprintf('Error: Circuit2: unable to restore previous operation mode (%u).', $previousOperationModeCircuit2));
+            if (null !== $previousOperationModeCircuit2) {
+                if (array_key_exists($previousOperationModeCircuit2, $this->mappingOperationModesCircuit2)) {
+                    $this->queue->queue($this->mappingOperationModesCircuit2[$previousOperationModeCircuit2]);
+                    $this->storage->clear(self::STORAGE_KEY_OPERATION_MODE_CIRCUIT2);
+                } else {
+                    $this->log->append(sprintf('Error: Circuit2: unable to restore previous operation mode (%u).', $previousOperationModeCircuit2));
+                }
             }
-
-            $this->log->append('Automatic Desinfection: Stopped');
         }
     }
 }
