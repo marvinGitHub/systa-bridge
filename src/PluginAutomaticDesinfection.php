@@ -5,6 +5,7 @@ class PluginAutomaticDesinfection
     const STORAGE_KEY_OPERATION_MODE_CIRCUIT1 = 'PluginAutomaticDesinfection.operationModeCircuit1';
     const STORAGE_KEY_OPERATION_MODE_CIRCUIT2 = 'PluginAutomaticDesinfection.operationModeCircuit2';
     const STORAGE_KEY_TIMESTAMP_NEXT_DESINFECTION = 'PluginAutomaticDesinfection.timestampNextDesinfection';
+    const INTERVAL_DEFAULT = 604800;
 
     private $storage;
     private $monitor;
@@ -21,7 +22,7 @@ class PluginAutomaticDesinfection
         3 => SystaBridge::COMMAND_CIRCUIT2_CONTINOUS_HEATING
     ];
 
-    public function __construct(KeyValueStorage $storage, Monitor $monitor, Queue $queue, Log $log, int $interval)
+    public function __construct(KeyValueStorage $storage, ?Monitor $monitor = null, ?Queue $queue = null, ?Log $log = null, int $interval = PluginAutomaticDesinfection::INTERVAL_DEFAULT)
     {
         $this->storage = $storage;
         $this->monitor = $monitor;
@@ -38,6 +39,13 @@ class PluginAutomaticDesinfection
         if (!$timestampNextDesinfection) {
             $this->setTimestampNextDesinfection(time());
         }
+    }
+
+    public function reset()
+    {
+        $this->storage->clear(self::STORAGE_KEY_TIMESTAMP_NEXT_DESINFECTION);
+        $this->storage->clear(self::STORAGE_KEY_OPERATION_MODE_CIRCUIT1);
+        $this->storage->clear(self::STORAGE_KEY_OPERATION_MODE_CIRCUIT2);
     }
 
     public function getTimestampNextDesinfection()
@@ -79,10 +87,16 @@ class PluginAutomaticDesinfection
             return;
         }
 
-        $this->monitor->set('timestampNextDesinfection', $this->getTimestampNextDesinfection());
+        $timestampNextDesinfection = $this->getTimestampNextDesinfection();
+
+        if (null === $timestampNextDesinfection) {
+            return;
+        }
+
+        $this->monitor->set('timestampNextDesinfection', $timestampNextDesinfection);
 
         // enable desinfection (comfort mode of circuit will be used for hot water settings)
-        if (time() >= $this->getTimestampNextDesinfection()) {
+        if (time() >= $timestampNextDesinfection) {
             $this->log->append('Automatic Desinfection: Started');
 
             $this->log->append(sprintf('Automatic Desinfection: Operation Mode Circuit1: %u', $operationModeCircuit1));

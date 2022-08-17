@@ -61,6 +61,7 @@ try {
     $monitor = new Monitor($config['monitor']);
     $dump = new Dump($config['dumpfile']);
     $serialDeviceConfiguration = new SerialDeviceConfiguration($config['serialDevice']);
+    $storage = new KeyValueStorage($config['storagePath']);
 
     switch ($command) {
         case 'getSystemConfiguration':
@@ -209,6 +210,10 @@ try {
         case 'disableAutomaticDesinfection':
             $config['automaticDesinfection'] = false;
             $configuration->save($config);
+
+            $plugin = new PluginAutomaticDesinfection($storage);
+            $plugin->reset();
+
             stdout($message = 'Automatic desinfection has been disabled.');
             $log->append($message);
             exit;
