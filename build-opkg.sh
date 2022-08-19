@@ -13,6 +13,7 @@ cp -r ./cron ./build/data/root/systa-bridge/
 cp -r ./src ./build/data/root/systa-bridge/
 cp -r ./config ./build/data/root/systa-bridge/
 
+cp ./authorization.php ./build/data/root/systa-bridge/
 cp ./consume.php ./build/data/root/systa-bridge/
 cp ./server.php ./build/data/root/systa-bridge/
 cp ./index.php ./build/data/root/systa-bridge/
