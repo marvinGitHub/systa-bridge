@@ -257,6 +257,11 @@ class Monitor
         return $this->data['temperatureSetHotWater'] ?? null;
     }
 
+    public function getCounterBoilerStart(): int
+    {
+        return $this->data['counterBoilerStart'] ?? 0;
+    }
+
     private function filterDeactivatedCircuitValues()
     {
         foreach ($this->data as $key => $value) {

@@ -25,7 +25,11 @@ $queue = new Queue($config['queue']);
 $dump = new Dump($config['dumpfile']);
 $storage = new KeyValueStorage($config['storagePath']);
 
-$pluginAutomaticDesinfection = new PluginAutomaticDesinfection($storage, $monitor, $queue, $log, $config['intervalAutomaticDesinfection']);
+$pluginAutomaticDesinfection = new PluginAutomaticDesinfection($storage, $monitor, $queue, $log);
+$pluginAutomaticDesinfection->setInterval($config['intervalAutomaticDesinfection']);
+
+$pluginCounterBoilerStart = new PluginCounterBoilerStart($storage, $monitor, $queue, $log);
+$pluginCounterBoilerStart->setInterval($config['intervalCounterBoilerStart']);
 
 function dump(string $data)
 {
@@ -131,7 +135,11 @@ while (true) {
         $buffer = str_replace($telegram, '', $buffer);
     }
 
-    if ($config['automaticDesinfection']) {
+    if ($config['pluginAutomaticDesinfection']) {
         $pluginAutomaticDesinfection->run();
+    }
+
+    if ($config['pluginCounterBoilerStart']) {
+        $pluginCounterBoilerStart->run();
     }
 }

@@ -137,7 +137,7 @@ class Serial
 
         if ($this->autoflush === true) $this->flush();
 
-        usleep((int) $waitForReply);
+        usleep((int)$waitForReply);
     }
 
     /**
