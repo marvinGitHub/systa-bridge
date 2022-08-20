@@ -9,7 +9,7 @@
   "bufferLimit": 512,
   "pluginAutomaticDesinfection": false,
   "pluginCounterBoilerStart": true,
-  "intervalCounterBoilerStart": 86400,,
+  "intervalCounterBoilerStart": 86400,
   "intervalAutomaticDesinfection": 604800,
   "storagePath": "/tmp"
 }
