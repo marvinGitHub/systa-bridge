@@ -9,35 +9,30 @@ class PluginCounterBoilerStart extends PluginAbstract
 
     const INTERVAL_DEFAULT = 86400;
 
-    public function reset()
-    {
-        $this->getStorage()->clear(PluginCounterBoilerStart::STORAGE_KEY_COUNTER_INITIAL);
-        $this->getStorage()->clear(PluginCounterBoilerStart::STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION);
-    }
-
-    protected function init()
+    private function init(PluginContext $context)
     {
         $this->setInterval(PluginCounterBoilerStart::INTERVAL_DEFAULT);
-        $this->getStorage()->set(PluginCounterBoilerStart::STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION, time() + $this->getInterval());
-        $this->getStorage()->set(PluginCounterBoilerStart::STORAGE_KEY_COUNTER_INITIAL, $this->getMonitor()->getCounterBoilerStart());
+
+        $context->getStorage()->set(PluginCounterBoilerStart::STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION, time() + $this->getInterval());
+        $context->getStorage()->set(PluginCounterBoilerStart::STORAGE_KEY_COUNTER_INITIAL, $context->getMonitor()->getCounterBoilerStart());
     }
 
-    public function run()
+    public function run(PluginContext $context)
     {
-        $timestampNextEvaluation = $this->getStorage()->get(PluginCounterBoilerStart::STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION);
+        $timestampNextEvaluation = $context->getStorage()->get(PluginCounterBoilerStart::STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION);
 
         if (null === $timestampNextEvaluation) {
-            $this->init();
+            $this->init($context);
             return;
         }
 
         if (time() >= $timestampNextEvaluation) {
-            $counterBoilerStartInitial = $this->getStorage()->get(PluginCounterBoilerStart::STORAGE_KEY_COUNTER_INITIAL);
-            $counterBoilerStartCurrent = $this->getMonitor()->getCounterBoilerStart();
-            $this->getMonitor()->set(sprintf('counterBoilerStartInterval%uSeconds', $this->getInterval()), $counterBoilerStartCurrent - $counterBoilerStartInitial);
+            $counterBoilerStartInitial = $context->getStorage()->get(PluginCounterBoilerStart::STORAGE_KEY_COUNTER_INITIAL);
+            $counterBoilerStartCurrent = $context->getMonitor()->getCounterBoilerStart();
 
-            $this->reset();
-            $this->init();
+            $context->getMonitor()->set(sprintf('counterBoilerStartInterval%uSeconds', $this->getInterval()), $counterBoilerStartCurrent - $counterBoilerStartInitial);
+
+            $this->init($context);
         }
     }
 }

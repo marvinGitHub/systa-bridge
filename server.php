@@ -26,8 +26,6 @@ try {
         'findSerialDevices',
         'enableDump',
         'disableDump',
-        'enableAutomaticDesinfection',
-        'disableAutomaticDesinfection'
     ];
     sort($supportedCommands);
 
@@ -205,22 +203,6 @@ try {
             $config['dump'] = false;
             $configuration->save($config);
             stdout($message = 'Dump has been disabled.');
-            $log->append($message);
-            exit;
-        case 'disableAutomaticDesinfection':
-            $config['automaticDesinfection'] = false;
-            $configuration->save($config);
-
-            $plugin = new PluginAutomaticDesinfection($storage);
-            $plugin->reset();
-
-            stdout($message = 'Automatic desinfection has been disabled.');
-            $log->append($message);
-            exit;
-        case 'enableAutomaticDesinfection':
-            $config['automaticDesinfection'] = true;
-            $configuration->save($config);
-            stdout($message = 'Automatic desinfection has been enabled.');
             $log->append($message);
             exit;
     }

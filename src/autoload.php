@@ -12,6 +12,7 @@ require_once 'SerialDeviceConfiguration.php';
 require_once 'State.php';
 require_once 'KeyValueStorage.php';
 require_once 'IntervalAwareTrait.php';
+require_once 'PluginHandler.php';
 require_once 'PluginAbstract.php';
 require_once 'PluginCounterBoilerStart.php';
-require_once 'PluginAutomaticDesinfection.php';
+require_once 'PluginContext.php';
