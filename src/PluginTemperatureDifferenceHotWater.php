@@ -32,7 +32,7 @@ class PluginTemperatureDifferenceHotWater extends PluginAbstract
 
             $temperatureDifference = abs($temperatureCurrent - $temperatureInitial);
 
-            $context->getMonitor()->set(sprintf('temperatureDifferenceHotWater%uSeconds', $this->getInterval()), sprintf('%s%f', $temperatureCurrent >= $temperatureInitial ? '+' : '-', $temperatureDifference));
+            $context->getMonitor()->set(sprintf('temperatureDifferenceHotWater%uSeconds', $this->getInterval()), sprintf('%s%.1f', $temperatureCurrent >= $temperatureInitial ? '+' : '-', $temperatureDifference));
 
             $this->init($context);
         }
