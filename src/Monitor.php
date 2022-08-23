@@ -249,12 +249,12 @@ class Monitor
 
     public function getTemperatureHotWater()
     {
-        return $this->data['temperatureHotWater'] ?? null;
+        return $this->data['temperatureHotWater'] ?? 0;
     }
 
     public function getTemperatureSetHotWater()
     {
-        return $this->data['temperatureSetHotWater'] ?? null;
+        return $this->data['temperatureSetHotWater'] ?? 0;
     }
 
     public function getCounterBoilerStart(): int
