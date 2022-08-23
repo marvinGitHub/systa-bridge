@@ -13,8 +13,14 @@ class PluginTemperatureDifferenceHotWater extends PluginAbstract
     {
         $this->setInterval(PluginTemperatureDifferenceHotWater::INTERVAL_DEFAULT);
 
+        $temperatureHotWater = $context->getMonitor()->getTemperatureHotWater();
+
+        if (!$temperatureHotWater) {
+            return;
+        }
+
         $context->getStorage()->set(PluginTemperatureDifferenceHotWater::STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION, time() + $this->getInterval());
-        $context->getStorage()->set(PluginTemperatureDifferenceHotWater::STORAGE_KEY_TEMPERATURE_INITIAL, $context->getMonitor()->getTemperatureHotWater());
+        $context->getStorage()->set(PluginTemperatureDifferenceHotWater::STORAGE_KEY_TEMPERATURE_INITIAL, $temperatureHotWater);
     }
 
     public function run(PluginContext $context)
