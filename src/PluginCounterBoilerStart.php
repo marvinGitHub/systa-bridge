@@ -7,12 +7,13 @@ class PluginCounterBoilerStart extends PluginAbstract
     const STORAGE_KEY_COUNTER_INITIAL = 'PluginCounterBoilerStart.counterInitial';
     const STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION = 'PluginCounterBoilerStart.timestampNextEvaluation';
 
-    const INTERVAL_DEFAULT = 86400;
+    protected function getIntervalDefault(): int
+    {
+        return 86400;
+    }
 
     private function init(PluginContext $context)
     {
-        $this->setInterval(PluginCounterBoilerStart::INTERVAL_DEFAULT);
-
         $context->getStorage()->set(PluginCounterBoilerStart::STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION, time() + $this->getInterval());
         $context->getStorage()->set(PluginCounterBoilerStart::STORAGE_KEY_COUNTER_INITIAL, $context->getMonitor()->getCounterBoilerStart());
     }
