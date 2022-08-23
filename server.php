@@ -79,13 +79,13 @@ try {
             $log->append($message);
             exit;
         case 'startMonitoring':
-            $config['monitoring'] = true;
+            $config['pluginMonitoringKeepAlive'] = true;
             $configuration->save($config);
             stdout($message = 'Monitoring has been enabled.');
             $log->append($message);
             exit;
         case 'stopMonitoring':
-            $config['monitoring'] = false;
+            $config['pluginMonitoringKeepAlive'] = false;
             $configuration->save($config);
             $monitor->clear();
             stdout($message = 'Monitoring has been disabled.');

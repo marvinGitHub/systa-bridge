@@ -7,12 +7,13 @@ class PluginTemperatureDifferenceHotWater extends PluginAbstract
     const STORAGE_KEY_TEMPERATURE_INITIAL = 'PluginTemperatureDifferenceHotWater.temperatureInitial';
     const STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION = 'PluginTemperatureDifferenceHotWater.timestampNextEvaluation';
 
-    const INTERVAL_DEFAULT = 3600;
+    protected function getIntervalDefault(): int
+    {
+        return 3600;
+    }
 
     private function init(PluginContext $context)
     {
-        $this->setInterval(PluginTemperatureDifferenceHotWater::INTERVAL_DEFAULT);
-
         $temperatureHotWater = $context->getMonitor()->getTemperatureHotWater();
 
         if (!$temperatureHotWater) {

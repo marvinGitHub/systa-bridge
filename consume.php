@@ -36,9 +36,12 @@ $pluginTemperatureDifferenceHotWater->setInterval($config['intervalTemperatureDi
 $pluginTemperatureDifferenceBufferTop = new PluginTemperatureDifferenceBufferTop();
 $pluginTemperatureDifferenceBufferTop->setInterval($config['intervalTemperatureDifferenceBufferTop']);
 
+$pluginMonitoringKeepAlive = new PluginMonitoringKeepAlive();
+
 $pluginHandler->register($pluginCounterBoilerStart);
 $pluginHandler->register($pluginTemperatureDifferenceHotWater);
 $pluginHandler->register($pluginTemperatureDifferenceBufferTop);
+$pluginHandler->register($pluginMonitoringKeepAlive);
 
 function dump(string $data)
 {
@@ -93,7 +96,6 @@ function determineTelegram(string $value): ?string
     return $matches[1];
 }
 
-$keepAliveCounter = null;
 $buffer = '';
 
 while (true) {
@@ -104,17 +106,6 @@ while (true) {
     if ($command = $queue->next()) {
         sendSystaCommand($command);
         dump(PHP_EOL);
-    }
-
-    if ($config['monitoring']) {
-        $currentMinute = date('i');
-        if ($currentMinute != $keepAliveCounter) {
-            // request service interface to collect monitoring data every 5-8 seconds for 3 minutes, this command needs to be repeated every minute
-            sendSystaCommand(SystaBridge::COMMAND_START_MONITORING_V2);
-            dump(PHP_EOL);
-            $keepAliveCounter = $currentMinute;
-            $log->append('Keep alive packet sent.');
-        }
     }
 
     $dataSerial = $serial->readPort();
@@ -144,6 +135,7 @@ while (true) {
         $buffer = str_replace($telegram, '', $buffer);
     }
 
+    $config['pluginMonitoringKeepAlive'] ? $pluginHandler->enable($pluginMonitoringKeepAlive) : $pluginHandler->disable($pluginMonitoringKeepAlive);
     $config['pluginCounterBoilerStart'] ? $pluginHandler->enable($pluginCounterBoilerStart) : $pluginHandler->disable($pluginCounterBoilerStart);
     $config['pluginTemperatureDifferenceHotWater'] ? $pluginHandler->enable($pluginTemperatureDifferenceHotWater) : $pluginHandler->disable($pluginTemperatureDifferenceHotWater);
     $config['pluginTemperatureDifferenceBufferTop'] ? $pluginHandler->enable($pluginTemperatureDifferenceBufferTop) : $pluginHandler->disable($pluginTemperatureDifferenceBufferTop);
