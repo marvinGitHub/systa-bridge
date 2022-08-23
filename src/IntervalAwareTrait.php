@@ -4,7 +4,7 @@ trait IntervalAwareTrait
 {
     private $interval;
 
-    abstract protected function getIntervalDefault() : int;
+    abstract protected function getIntervalDefault(): int;
 
     public function getInterval(): ?int
     {

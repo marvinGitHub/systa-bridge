@@ -50,7 +50,8 @@ class PluginHandler
                 $plugin->run($this->getDefaultContext());
             }
         } catch (Exception $e) {
-            // TODO
+            echo $e->getMessage();
+            echo $e->getTraceAsString();
         }
     }
 }

@@ -3,6 +3,7 @@
 class Dump
 {
     private $pathname;
+    private $enabled = true;
 
     public function __construct(string $pathname)
     {
@@ -19,6 +20,10 @@ class Dump
 
     public function write(string $data)
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         return file_put_contents($this->pathname, $data, FILE_APPEND);
     }
 
@@ -28,5 +33,15 @@ class Dump
             return;
         }
         return unlink($this->pathname);
+    }
+
+    public function enable()
+    {
+        $this->enabled = true;
+    }
+
+    public function disable()
+    {
+        $this->enabled = false;
     }
 }
