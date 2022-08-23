@@ -16,4 +16,5 @@ require_once 'PluginHandler.php';
 require_once 'PluginAbstract.php';
 require_once 'PluginCounterBoilerStart.php';
 require_once 'PluginTemperatureDifferenceHotWater.php';
+require_once 'PluginTemperatureDifferenceBufferTop.php';
 require_once 'PluginContext.php';

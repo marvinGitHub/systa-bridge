@@ -247,6 +247,11 @@ class Monitor
         return $this->data['operationModeCircuit2'] ?? null;
     }
 
+    public function getTemperatureBufferTop()
+    {
+        return $this->data['temperatureBufferTop'] ?? 0;
+    }
+
     public function getTemperatureHotWater()
     {
         return $this->data['temperatureHotWater'] ?? 0;
