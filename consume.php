@@ -30,7 +30,11 @@ $pluginHandler = new PluginHandler(new PluginContext($storage, $monitor, $queue,
 $pluginCounterBoilerStart = new PluginCounterBoilerStart();
 $pluginCounterBoilerStart->setInterval($config['intervalCounterBoilerStart']);
 
+$pluginTemperatureDifferenceHotWater = new PluginTemperatureDifferenceHotWater();
+$pluginTemperatureDifferenceHotWater->setInterval($config['intervalTemperatureDifferenceHotWater']);
+
 $pluginHandler->register($pluginCounterBoilerStart);
+$pluginHandler->register($pluginTemperatureDifferenceHotWater);
 
 function dump(string $data)
 {
@@ -137,6 +141,7 @@ while (true) {
     }
 
     $config['pluginCounterBoilerStart'] ? $pluginHandler->enable($pluginCounterBoilerStart) : $pluginHandler->disable($pluginCounterBoilerStart);
+    $config['pluginTemperatureDifferenceHotWater'] ? $pluginHandler->enable($pluginTemperatureDifferenceHotWater) : $pluginHandler->disable($pluginTemperatureDifferenceHotWater);
 
     $pluginHandler->run();
 }

@@ -5,7 +5,7 @@ class PluginCounterBoilerStart extends PluginAbstract
     use IntervalAwareTrait;
 
     const STORAGE_KEY_COUNTER_INITIAL = 'PluginCounterBoilerStart.counterInitial';
-    const STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION = 'PluginCounterBoilerStart.timestampNextEvaludation';
+    const STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION = 'PluginCounterBoilerStart.timestampNextEvaluation';
 
     const INTERVAL_DEFAULT = 86400;
 

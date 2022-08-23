@@ -8,6 +8,8 @@
   "dump": false,
   "bufferLimit": 512,
   "pluginCounterBoilerStart": true,
+  "pluginTemperatureDifferenceHotWater": true,
   "intervalCounterBoilerStart": 86400,
+  "intervalTemperatureDifferenceHotWater": 3600,
   "storagePath": "/tmp"
 }
