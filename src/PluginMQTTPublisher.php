@@ -3,7 +3,6 @@
 class PluginMQTTPublisher extends PluginAbstract
 {
     private $broker;
-    private $checksum;
 
     public function __construct(string $broker)
     {
@@ -25,36 +24,24 @@ class PluginMQTTPublisher extends PluginAbstract
 
     public function run(PluginContext $context)
     {
-        $message = $this->createMessage($context->getMonitor()->load());
-
-        if ($this->checksum === $checksum = md5($message)) {
-            $context->getLog()->append(sprintf('%s: skip', static::class));
-            return;
-        }
-
-        $this->checksum = $checksum;
-
         try {
             $broker = $this->getBroker();
-
-            $context->getLog()->append(sprintf('%s: publish data with configuration: %s', static::class, var_export($broker, true)));
 
             $mqtt = new Bluerhinos\phpMQTT($broker['host'], $broker['port'], $broker['user']);
 
             $mqtt->connect(true, null, $broker['user'], $broker['pass']);
-            $mqtt->publish(ltrim($broker['path'], '/'), $message);
+
+            foreach ($context->getMonitor()->load() as $key => $value) {
+                $mqtt->publish(sprintf('%s/%s', ltrim($broker['path'], '/'), $key), json_encode(['value' => $value]));
+            }
+
             $mqtt->close();
 
             $context->getLog()->append(sprintf('%s: successfully published data', static::class));
         } catch (Exception $e) {
+            $context->getLog()->append(sprintf('%s: failed publishing data', static::class));
             $context->getLog()->append($e->getMessage());
             $context->getLog()->append($e->getTraceAsString());
         }
-    }
-
-    private function createMessage(array $data)
-    {
-        unset($data['timestamp']);
-        return json_encode($data);
     }
 }
