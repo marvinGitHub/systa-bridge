@@ -1,7 +1,8 @@
 <?php
 
 require 'authorization.php';
-require 'src/autoload.php';
+
+require 'bootstrap.php';
 
 $configuration = new Configuration(__DIR__ . '/config/config.json', __DIR__ . '/config/default.json');
 if (false === $config = $configuration->load()) {
@@ -65,6 +66,8 @@ echo <<<HTML
     <button name="command" value="configureSerialDevice">Configure Serial Device</button>
     <button name="command" value="showSerialDeviceConfiguration">Show Serial Device Configuration</button>
     <button name="command" value="findSerialDevices">Find Serial Devices</button>
+    <button name="command" value="enablePluginMQTTPublisher">Enable MQTT</button>
+    <button name="command" value="disablePluginMQTTPublisher">Disable MQTT</button> 
     <button name="command" value="reboot">Reboot</button>
 </form>
 

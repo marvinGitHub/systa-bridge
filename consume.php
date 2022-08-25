@@ -1,8 +1,6 @@
 <?php
 
-require 'src/autoload.php';
-
-ini_set('serialize_precision', 10);
+require 'bootstrap.php';
 
 $configuration = new Configuration(__DIR__ . '/config/config.json', __DIR__ . '/config/default.json');
 if (false === $config = $configuration->load()) {
@@ -43,6 +41,8 @@ $pluginTemperatureDifferenceBufferTop->setInterval($config['intervalTemperatureD
 
 $pluginMonitoringKeepAlive = new PluginMonitoringKeepAlive();
 
+$pluginMQTTPublisher = new PluginMQTTPublisher($config['mqttBroker']);
+
 $pluginHandler->register($pluginMonitoringKeepAlive);
 $pluginHandler->register($pluginCommandQueue);
 $pluginHandler->register($pluginSerialProcessor);
@@ -50,6 +50,7 @@ $pluginHandler->register($pluginTelegramProcessor);
 $pluginHandler->register($pluginCounterBoilerStart);
 $pluginHandler->register($pluginTemperatureDifferenceHotWater);
 $pluginHandler->register($pluginTemperatureDifferenceBufferTop);
+$pluginHandler->register($pluginMQTTPublisher);
 
 while (true) {
     $config = $configuration->load();
@@ -58,6 +59,7 @@ while (true) {
 
     sleep(1);
 
+    $config['pluginMQTTPublisher'] ? $pluginHandler->enable($pluginMQTTPublisher) : $pluginHandler->disable($pluginMQTTPublisher);
     $config['pluginMonitoringKeepAlive'] ? $pluginHandler->enable($pluginMonitoringKeepAlive) : $pluginHandler->disable($pluginMonitoringKeepAlive);
     $config['pluginCounterBoilerStart'] ? $pluginHandler->enable($pluginCounterBoilerStart) : $pluginHandler->disable($pluginCounterBoilerStart);
     $config['pluginTemperatureDifferenceHotWater'] ? $pluginHandler->enable($pluginTemperatureDifferenceHotWater) : $pluginHandler->disable($pluginTemperatureDifferenceHotWater);

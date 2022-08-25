@@ -17,6 +17,8 @@ cp ./authorization.php ./build/data/root/systa-bridge/
 cp ./consume.php ./build/data/root/systa-bridge/
 cp ./server.php ./build/data/root/systa-bridge/
 cp ./index.php ./build/data/root/systa-bridge/
+cp ./bootstrap.php ./build/data/root/systa-bridge/
+cp -r ./vendor ./build/data/root/systa-bridge/
 
 cp ./config/logrotate.conf ./build/data/etc/logrotate.conf.d/systa-bridge
 

@@ -1,10 +1,8 @@
 <?php
 
-ini_set('serialize_precision', 10);
+require 'bootstrap.php';
 
 try {
-    require 'src/autoload.php';
-
     $supportedCommands = [
         'sendSystaCommand',
         'showCommandQueue',
@@ -26,6 +24,8 @@ try {
         'findSerialDevices',
         'enableDump',
         'disableDump',
+        'enabledPluginMQTTPublisher',
+        'disablePluginMQTTPublisher'
     ];
     sort($supportedCommands);
 
@@ -203,6 +203,18 @@ try {
             $config['dump'] = false;
             $configuration->save($config);
             stdout($message = 'Dump has been disabled.');
+            $log->append($message);
+            exit;
+        case 'disablePluginMQTTPublisher':
+            $config['pluginMQTTPublisher'] = false;
+            $configuration->save($config);
+            stdout($message = 'Plugin MQTT Publisher has been disabled.');
+            $log->append($message);
+            exit;
+        case 'enablePluginMQTTPublisher':
+            $config['pluginMQTTPublisher'] = true;
+            $configuration->save($config);
+            stdout($message = 'Plugin MQTT Publisher has been enabled.');
             $log->append($message);
             exit;
     }
