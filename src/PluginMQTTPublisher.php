@@ -27,7 +27,7 @@ class PluginMQTTPublisher extends PluginAbstract
         try {
             $broker = $this->getBroker();
 
-            $mqtt = new \PhpMqtt\Client\MqttClient($broker['host'], $broker['port'], $broker['user']);
+            $mqtt = new Bluerhinos\phpMQTT($broker['host'], $broker['port'], $broker['user']);
 
             $mqtt->connect();
 
@@ -35,7 +35,7 @@ class PluginMQTTPublisher extends PluginAbstract
                 $mqtt->publish(sprintf('%s/%s', $broker['path'], $key), (string)$value, 0);
             }
 
-            $mqtt->disconnect();
+            $mqtt->close();
         } catch (Exception $e) {
             $context->getLog()->append($e->getMessage());
             $context->getLog()->append($e->getTraceAsString());

@@ -1,5 +1,10 @@
 {
-    "require": {
-        "php-mqtt/client": "^1.4"
+  "require": {
+    "bluerhinos/phpmqtt": "^1.0"
+  },
+  "config": {
+    "platform": {
+      "php": "7.2"
     }
+  }
 }
