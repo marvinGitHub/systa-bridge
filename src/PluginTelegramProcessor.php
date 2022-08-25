@@ -34,12 +34,16 @@ class PluginTelegramProcessor extends PluginAbstract
         $checksum = SystaBridge::checksum(substr($telegram, 0, strlen($telegram) - 2));
         $expected = substr($telegram, strlen($telegram) - 2);
 
-        if ($checksum != $expected) {
+        $validChecksum = $checksum === $expected;
+
+        if (!$validChecksum) {
             $context->getLog()->append(sprintf('Checksum mismatch. telegram: %s expected: %s computed: %s', $telegram, $expected, $checksum));
-            return;
         }
 
-        $context->getMonitor()->process($telegram);
+        if ($validChecksum) {
+            $context->getMonitor()->process($telegram);
+        }
+
         $context->getBuffer()->remove($telegram);
     }
 }
