@@ -24,7 +24,7 @@ try {
         'findSerialDevices',
         'enableDump',
         'disableDump',
-        'enabledPluginMQTTPublisher',
+        'enablePluginMQTTPublisher',
         'disablePluginMQTTPublisher'
     ];
     sort($supportedCommands);
