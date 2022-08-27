@@ -66,10 +66,6 @@ class SystaBridge
 
         $checksum = $value % 256;
 
-        if ($checksum > 0) {
-            return Helper::getFixed(dechex(256 - $checksum));
-        }
-
-        return 0;
+        return Helper::getFixed(dechex($checksum > 0 ? (256 - $checksum) : 0));
     }
 }

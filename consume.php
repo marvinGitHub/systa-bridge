@@ -24,7 +24,8 @@ $queue = new Queue($config['queue']);
 $dump = new Dump($config['dumpfile']);
 $storage = new KeyValueStorage($config['storagePath']);
 
-$pluginHandler = new PluginHandler(new PluginContext($storage, $buffer, $serial, $monitor, $queue, $log, $dump));
+$pluginContext = new PluginContext($configuration, $storage, $buffer, $serial, $monitor, $queue, $log, $dump);
+$pluginHandler = new PluginHandler($pluginContext);
 
 $pluginCommandQueue = new PluginCommandQueue();
 $pluginSerialProcessor = new PluginSerialProcessor();
