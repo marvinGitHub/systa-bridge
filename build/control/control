@@ -1,8 +1,8 @@
 Package: systa-bridge
-Version: 1.0.16
+Version: 1.0.0
 Architecture: all
 Maintainer: Marvin Elia Hoppe <marvin_elia@web.de>
 Priority: optional
-Depends: php7-cli, php7-mod-json, micrond, logrotate, coreutils-stty, kmod-usb-serial, kmod-usb-serial-ftdi
+Depends: php7-cli, php7-mod-json, php7-mod-curl, micrond, logrotate, coreutils-stty, kmod-usb-serial, kmod-usb-serial-ftdi
 Source: N/A
 Description:  Paradigma SystaComfort Bridge

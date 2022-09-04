@@ -1,4 +1,5 @@
-#!/bin/sh
-cd /etc/init.d/ && ./micrond stop
+#!/bin/ash
+
+[ ! -f /etc/init.d/micrond ] && cd /etc/init.d/ && ./micrond stop
 
 exit 0

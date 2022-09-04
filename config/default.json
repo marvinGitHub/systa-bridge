@@ -1,4 +1,5 @@
 {
+  "heatingSource": "pellet",
   "serialDevice": "/dev/ttyUSB0",
   "logfile": "/tmp/system.log",
   "queue": "/tmp/command.txt",

@@ -1,7 +1,6 @@
-#!/bin/sh
-ln -s /usr/bin/php-cli /usr/bin/php
+#!/bin/ash
 
-cd /etc/init.d/ && ./micrond restart
+[ ! -f /usr/bin/php ] && ln -s /usr/bin/php-cli /usr/bin/php
 
 uci set system.@system[0].hostname=SystaBridge
 uci commit
@@ -37,3 +36,5 @@ uci set firewall.@redirect[-1].dest_port=80
 uci set firewall.@redirect[-1].target=DNAT
 
 uci commit firewall
+
+reboot

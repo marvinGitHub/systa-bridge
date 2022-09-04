@@ -12,7 +12,6 @@ mkdir -p ./build/data/usr/lib/micron.d/
 cp -r ./cron ./build/data/root/systa-bridge/
 cp -r ./src ./build/data/root/systa-bridge/
 cp -r ./config ./build/data/root/systa-bridge/
-cp -r ./config/default.json ./build/data/root/systa-bridge/config/config.json
 
 cp ./authorization.php ./build/data/root/systa-bridge/
 cp ./consume.php ./build/data/root/systa-bridge/

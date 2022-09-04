@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/ash
+
 [ -f /tmp/consumer.log ] && rm /tmp/consumer.log
 [ -f /tmp/webserver.log ] && rm /tmp/webserver.log
 [ -f /tmp/system.log ] && rm /tmp/system.log

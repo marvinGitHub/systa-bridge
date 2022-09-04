@@ -31,6 +31,8 @@ $pluginCommandQueue = new PluginCommandQueue();
 $pluginSerialProcessor = new PluginSerialProcessor();
 $pluginTelegramProcessor = new PluginTelegramProcessor();
 
+$pluginAveragePricePellet = new PluginAveragePricePellet();
+
 $pluginCounterBoilerStart = new PluginCounterBoilerStart();
 $pluginCounterBoilerStart->setInterval($config['intervalCounterBoilerStart']);
 
@@ -51,6 +53,7 @@ $pluginHandler->register($pluginTelegramProcessor);
 $pluginHandler->register($pluginCounterBoilerStart);
 $pluginHandler->register($pluginTemperatureDifferenceHotWater);
 $pluginHandler->register($pluginTemperatureDifferenceBufferTop);
+$pluginHandler->register($pluginAveragePricePellet);
 $pluginHandler->register($pluginMQTTPublisher);
 
 while (true) {
@@ -65,6 +68,7 @@ while (true) {
     $config['pluginCounterBoilerStart'] ? $pluginHandler->enable($pluginCounterBoilerStart) : $pluginHandler->disable($pluginCounterBoilerStart);
     $config['pluginTemperatureDifferenceHotWater'] ? $pluginHandler->enable($pluginTemperatureDifferenceHotWater) : $pluginHandler->disable($pluginTemperatureDifferenceHotWater);
     $config['pluginTemperatureDifferenceBufferTop'] ? $pluginHandler->enable($pluginTemperatureDifferenceBufferTop) : $pluginHandler->disable($pluginTemperatureDifferenceBufferTop);
+    $config['heatingSource'] === 'pellet' ? $pluginHandler->enable($pluginAveragePricePellet) : $pluginHandler->disable($pluginAveragePricePellet);
 
     $pluginHandler->run();
 }
