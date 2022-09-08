@@ -55,7 +55,7 @@ echo <<<HTML
     <button name="command" value="showMonitor">Show Monitor</button>
     <button name="command" value="getSystemLog">Show System Log</button>    
     <button name="command" value="clearSystemLog">Clear System Log</button>
-    <button name="command" value="getSystemConfiguration">Show System Configuration</button>
+    <button name="command" value="showSystemConfigurationEditor">Show System Configuration</button>
     <button name="command" value="resetSystemConfiguration">Reset System Configuration</button>
     <button name="command" value="startMonitoring">Start Monitoring</button>
     <button name="command" value="stopMonitoring">Stop Monitoring</button>

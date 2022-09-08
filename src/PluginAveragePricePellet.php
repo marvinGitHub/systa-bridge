@@ -44,5 +44,6 @@ class PluginAveragePricePellet extends PluginAbstract
 
         $context->getMonitor()->set('pelletPriceAveragePerTon', round($priceAveragePerTon, 2));
         $context->getMonitor()->set('pelletPriceAveragePerKW', round($priceAveragePerKW, 2));
+        $context->getMonitor()->save();
     }
 }

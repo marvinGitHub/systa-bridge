@@ -10,8 +10,7 @@ try {
         'startMonitoring',
         'getSystemLog',
         'clearSystemLog',
-        'getSystemConfiguration',
-        'setSystemConfiguration',
+        'showSystemConfigurationEditor',
         'resetSystemConfiguration',
         'getServerStatus',
         'clearCommandQueue',
@@ -25,7 +24,8 @@ try {
         'enableDump',
         'disableDump',
         'enablePluginMQTTPublisher',
-        'disablePluginMQTTPublisher'
+        'disablePluginMQTTPublisher',
+        'saveSystemConfiguration'
     ];
     sort($supportedCommands);
 
@@ -35,6 +35,12 @@ try {
             $content = sprintf('<pre>%s</pre>', $content);
         }
         echo $content;
+    }
+
+    function printJSON($data)
+    {
+        header('Content-Type: application/json');
+        echo json_encode($data, JSON_PRETTY_PRINT) ?? '';
     }
 
     if (!isset($_POST['command'])) {
@@ -62,8 +68,32 @@ try {
     $storage = new KeyValueStorage($config['storagePath']);
 
     switch ($command) {
-        case 'getSystemConfiguration':
-            echo json_encode($config, JSON_PRETTY_PRINT);
+        case 'saveSystemConfiguration':
+            if (!isset($_POST['config'])) {
+                stdout('No configuration provided');
+                exit;
+            }
+
+            try {
+                if (!$configuration->save($_POST['config'])) {
+                    throw new Exception();
+                }
+            } catch (Exception $e) {
+                stdout('Posted configuration contains errors. Please check JSON syntax.');
+                exit;
+            }
+
+            stdout('System configuration has been saved successfully.');
+            exit;
+        case 'showSystemConfigurationEditor':
+            $config = json_encode($config, JSON_PRETTY_PRINT);
+
+            echo <<<HTML
+<form action="server.php" method="post">
+    <textarea name="config" style="width: 100%; height: 90%;">$config</textarea><br />
+    <button name="command" value="saveSystemConfiguration">Save</button>
+</form>
+HTML;
             exit;
         case 'clearSystemLog':
             $log->clear();
@@ -137,8 +167,7 @@ try {
                 $log->append($message);
                 exit;
             }
-            header('Content-Type: application/json');
-            stdout(json_encode($page, JSON_PRETTY_PRINT), false);
+            printJSON($page);
             exit;
         case 'showDump':
             $log->append('Load dump');
@@ -168,7 +197,7 @@ try {
             if (false === $serialDeviceConfiguration->configure()) {
                 stdout($message = 'Serial device configuration failed.');
             } else {
-                stdout($message = 'Serial device configuration succesful.');
+                stdout($message = 'Serial device configuration successful.');
             }
             $log->append($message);
             exit;
