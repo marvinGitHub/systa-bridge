@@ -23,17 +23,13 @@ class State
         $this->monitor = $monitor;
     }
 
-    public function getStateSystem()
+    public function getStateSystem(): int
     {
         if (!$this->serialDeviceConfiguration->serialDeviceAttached()) {
             return State::STATE_NOT_CONNECTED;
         }
 
         $errorCodes = $this->monitor->getErrorCodes();
-
-        if (false === $errorCodes) {
-            return State::STATE_UNKNOWN;
-        }
 
         if (!empty($errorCodes[0])) {
             return State::STATE_ERROR_BOILER;
@@ -46,15 +42,15 @@ class State
         return State::STATE_OK;
     }
 
-    public function getStateBoiler()
+    public function getStateBoiler(): int
     {
         $data = $this->monitor->load();
 
-        if (!isset($data['stateBurnerContact'])) {
+        if (!isset($data['statePumpBoiler'])) {
             return State::STATE_BOILER_UNKNOWN;
         }
 
-        if (1 === $data['stateBurnerContact']) {
+        if (1 === (int)$data['statePumpBoiler']) {
             return State::STATE_BOILER_ON;
         }
 
