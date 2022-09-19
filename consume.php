@@ -42,6 +42,8 @@ $pluginTemperatureDifferenceHotWater->setInterval($config['intervalTemperatureDi
 $pluginTemperatureDifferenceBufferTop = new PluginTemperatureDifferenceBufferTop();
 $pluginTemperatureDifferenceBufferTop->setInterval($config['intervalTemperatureDifferenceBufferTop']);
 
+$pluginOperationTimeBoiler = new PluginOperationTimeBoiler();
+
 $pluginMonitoringKeepAlive = new PluginMonitoringKeepAlive();
 
 $pluginMQTTPublisher = new PluginMQTTPublisher($config['mqttBroker']);
@@ -53,6 +55,7 @@ $pluginHandler->register($pluginTelegramProcessor);
 $pluginHandler->register($pluginCounterBoilerStart);
 $pluginHandler->register($pluginTemperatureDifferenceHotWater);
 $pluginHandler->register($pluginTemperatureDifferenceBufferTop);
+$pluginHandler->register($pluginOperationTimeBoiler);
 $pluginHandler->register($pluginAveragePricePellet);
 $pluginHandler->register($pluginMQTTPublisher);
 
@@ -68,6 +71,7 @@ while (true) {
     $config['pluginCounterBoilerStart'] ? $pluginHandler->enable($pluginCounterBoilerStart) : $pluginHandler->disable($pluginCounterBoilerStart);
     $config['pluginTemperatureDifferenceHotWater'] ? $pluginHandler->enable($pluginTemperatureDifferenceHotWater) : $pluginHandler->disable($pluginTemperatureDifferenceHotWater);
     $config['pluginTemperatureDifferenceBufferTop'] ? $pluginHandler->enable($pluginTemperatureDifferenceBufferTop) : $pluginHandler->disable($pluginTemperatureDifferenceBufferTop);
+    $config['pluginOperationTimeBoiler'] ? $pluginHandler->enable($pluginOperationTimeBoiler) : $pluginHandler->disable($pluginOperationTimeBoiler);
     $config['heatingSource'] === 'pellet' ? $pluginHandler->enable($pluginAveragePricePellet) : $pluginHandler->disable($pluginAveragePricePellet);
 
     $pluginHandler->run();

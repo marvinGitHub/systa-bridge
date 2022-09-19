@@ -24,5 +24,6 @@ require_once 'PluginTemperatureDifferenceHotWater.php';
 require_once 'PluginTemperatureDifferenceBufferTop.php';
 require_once 'PluginMonitoringKeepAlive.php';
 require_once 'PluginAveragePricePellet.php';
+require_once 'PluginOperationTimeBoiler.php';
 require_once 'PluginMQTTPublisher.php';
 require_once 'PluginContext.php';

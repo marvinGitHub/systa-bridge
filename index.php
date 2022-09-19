@@ -83,6 +83,8 @@ echo <<<HTML
     <button name="command" value="clearCommandQueue">Clear Command Queue</button>
     <button name="command" value="sendSystaCommand">Send Systa Command</button>
     <input type="text" name="systaCommand" placeholder="command (HEX)"/>
+    <input type="checkbox" name="allowUndocumentedCommands" />
+    <span>Allow undocumented commands</span>
 </form>
 </body>
 </html>

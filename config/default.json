@@ -10,6 +10,7 @@
   "pluginCounterBoilerStart": true,
   "pluginTemperatureDifferenceHotWater": true,
   "pluginTemperatureDifferenceBufferTop": true,
+  "pluginOperationTimeBoiler": true,
   "pluginMonitoringKeepAlive": false,
   "intervalCounterBoilerStart": 86400,
   "intervalTemperatureDifferenceHotWater": 3600,

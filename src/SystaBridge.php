@@ -53,7 +53,6 @@ class SystaBridge
     public static function isSupportedCommand(string $command): bool
     {
         return array_key_exists($command, static::getDocumentedCommands());
-
     }
 
     public static function checksum(string $hex)

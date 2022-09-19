@@ -127,9 +127,10 @@ HTML;
                 $log->append($message);
                 exit;
             }
+            $allowUndocumentedCommands = isset($_POST['allowUndocumentedCommands']);
             $valid = $invalid = [];
             foreach (explode(',', $_POST['systaCommand']) as $systaCommand) {
-                if (SystaBridge::isSupportedCommand($systaCommand)) {
+                if (SystaBridge::isSupportedCommand($systaCommand) || $allowUndocumentedCommands) {
                     $valid[] = $systaCommand;
                 } else {
                     $invalid[] = $systaCommand;

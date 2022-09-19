@@ -31,6 +31,10 @@ class PluginCounterBoilerStart extends PluginAbstract
             $counterBoilerStartInitial = $context->getStorage()->get(PluginCounterBoilerStart::STORAGE_KEY_COUNTER_INITIAL);
             $counterBoilerStartCurrent = $context->getMonitor()->getCounterBoilerStart();
 
+            if ($counterBoilerStartInitial > $counterBoilerStartCurrent) {
+                $counterBoilerStartInitial = 0;
+            }
+
             $context->getMonitor()->set(sprintf('counterBoilerStartInterval%uSeconds', $this->getInterval()), $counterBoilerStartCurrent - $counterBoilerStartInitial);
 
             $this->init($context);

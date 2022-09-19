@@ -117,7 +117,6 @@ class Monitor
             $this->data['stateModuleOpenTherm'] = Helper::getState($states, 12);
             $this->data['operationTimeHoursBoiler'] = hexdec(substr($message, 28, 8));
             $this->data['counterBoilerStart'] = hexdec(substr($message, 36, 8));
-            $this->data['averageOperationTimeMinutes'] = 0;
             $this->data['errorCodeBoiler'] = hexdec(substr($message, 44, 4));
             $this->data['errorCodeSensor'] = hexdec(substr($message, 48, 2));
             $this->data['operationModeCircuit1'] = hexdec(substr($message, 50, 2));
@@ -191,17 +190,9 @@ class Monitor
             $this->data['circulationPumpDifferentialGap'] = hexdec(substr($message, 34, 2)) * 0.1;
         }
 
-        $this->calculateValues();
         $this->applyCorrections();
         $this->filterDeactivatedCircuitValues();
         $this->save();
-    }
-
-    private function calculateValues()
-    {
-        if ($this->data['operationTimeHoursBoiler'] && $this->data['counterBoilerStart']) {
-            $this->data['averageOperationTimeMinutes'] = round(($this->data['operationTimeHoursBoiler'] / $this->data['counterBoilerStart']) * 60, 0);
-        }
     }
 
     private function getHeatingInformation(string $message): array
@@ -237,16 +228,6 @@ class Monitor
         return isset($this->data['operationModeCircuit2']) && $this->data['operationModeCircuit2'] !== 7;
     }
 
-    public function getOperationModeCircuit1()
-    {
-        return $this->data['operationModeCircuit1'] ?? null;
-    }
-
-    public function getOperationModeCircuit2()
-    {
-        return $this->data['operationModeCircuit2'] ?? null;
-    }
-
     public function getTemperatureBufferTop()
     {
         return $this->data['temperatureBufferTop'] ?? 0;
@@ -257,9 +238,9 @@ class Monitor
         return $this->data['temperatureHotWater'] ?? 0;
     }
 
-    public function getTemperatureSetHotWater()
+    public function getTemperatureFlowBoiler(): int
     {
-        return $this->data['temperatureSetHotWater'] ?? 0;
+        return $this->data['temperatureFlowBoiler'] ?? 0;
     }
 
     public function getCounterBoilerStart(): int
