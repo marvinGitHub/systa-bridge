@@ -2,37 +2,21 @@
 
 class PluginOperationTimeBoiler extends PluginAbstract
 {
+    const TOLERANCE_TEMPERATURE_FLOW_BOILER = 2.5;
+
     use IntervalAwareTrait;
-
-    private $temperatures = [];
-
-    const STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION = 'PluginOperationTimeBoiler.timestampNextEvaluation';
 
     protected function getIntervalDefault(): int
     {
         return 60;
     }
 
-    private function init(PluginContext $context)
-    {
-        $this->temperatures = [];
-
-        $context->getStorage()->set(PluginOperationTimeBoiler::STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION, time());
-    }
-
-    private function getTemperatureMax(): int
-    {
-        return end($this->temperatures) ?? 0;
-    }
-
     public function run(PluginContext $context)
     {
-        $storage = $context->getStorage();
-
-        $timestampNextEvaluation = $storage->get(PluginOperationTimeBoiler::STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION);
+        static $timestampNextEvaluation, $timestampTemperatureMin, $timestampTemperatureMax, $temperatureMin, $temperatureMax;
 
         if (null === $timestampNextEvaluation) {
-            $this->init($context);
+            $timestampNextEvaluation = time();
             return;
         }
 
@@ -40,7 +24,7 @@ class PluginOperationTimeBoiler extends PluginAbstract
             return;
         }
 
-        $storage->set(PluginOperationTimeBoiler::STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION, time() + $this->getInterval());
+        $timestampNextEvaluation = time() + $this->getInterval();
 
         $temperatureFlowBoilerCurrent = $context->getMonitor()->getTemperatureFlowBoiler();
 
@@ -48,27 +32,22 @@ class PluginOperationTimeBoiler extends PluginAbstract
             return;
         }
 
-        $this->temperatures[$temperatureFlowBoilerCurrent] = time();
-        ksort($this->temperatures);
-
-        if ($temperatureFlowBoilerCurrent >= $this->getTemperatureMax()) {
-            return; // peak not reached yet
+        if (empty($temperatureMin) || $temperatureFlowBoilerCurrent <= $temperatureMin) {
+            $temperatureMin = $temperatureFlowBoilerCurrent;
+            $timestampTemperatureMin = time();
         }
 
-        $start = array_shift($this->temperatures);
-        if (empty($start)) {
-            return;
+        if (empty($temperatureMax) || $temperatureFlowBoilerCurrent >= $temperatureMax) {
+            $temperatureMax = $temperatureFlowBoilerCurrent;
+            $timestampTemperatureMax = time();
         }
 
-        $end = array_pop($this->temperatures);
-        if (empty($end)) {
-            return;
+        if ($temperatureFlowBoilerCurrent + PluginOperationTimeBoiler::TOLERANCE_TEMPERATURE_FLOW_BOILER < $temperatureMax) {
+            $operationTimeMinutes = ($timestampTemperatureMax - $timestampTemperatureMin) / 60;
+
+            $context->getMonitor()->set('operationTimeMinutesBoiler', (int)$operationTimeMinutes);
+
+            $temperatureMin = $temperatureMax = null;
         }
-
-        $operationTimeMinutes = ($end - $start) / 60;
-
-        $context->getMonitor()->set('operationTimeMinutesBoiler', (int)$operationTimeMinutes);
-
-        $this->init($context);
     }
 }
