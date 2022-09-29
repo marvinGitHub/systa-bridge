@@ -34,19 +34,22 @@ $pluginTelegramProcessor = new PluginTelegramProcessor();
 $pluginAveragePricePellet = new PluginAveragePricePellet();
 
 $pluginCounterBoilerStart = new PluginCounterBoilerStart();
-$pluginCounterBoilerStart->setInterval($config['intervalCounterBoilerStart']);
+$pluginCounterBoilerStart->setInterval($config['pluginCounterBoilerStart.interval']);
 
 $pluginTemperatureDifferenceHotWater = new PluginTemperatureDifferenceHotWater();
-$pluginTemperatureDifferenceHotWater->setInterval($config['intervalTemperatureDifferenceHotWater']);
+$pluginTemperatureDifferenceHotWater->setInterval($config['pluginTemperatureDifferenceHotWater.interval']);
 
 $pluginTemperatureDifferenceBufferTop = new PluginTemperatureDifferenceBufferTop();
-$pluginTemperatureDifferenceBufferTop->setInterval($config['intervalTemperatureDifferenceBufferTop']);
+$pluginTemperatureDifferenceBufferTop->setInterval($config['pluginTemperatureDifferenceBufferTop.interval']);
 
 $pluginOperationTimeBoiler = new PluginOperationTimeBoiler();
+$pluginOperationTimeBoiler->setInterval($config['pluginOperationTimeBoiler.interval']);
+$pluginOperationTimeBoiler->setPeriodLength($config['pluginOperationTimeBoiler.periodLength']);
+$pluginOperationTimeBoiler->setToleranceTemperatureFlowBoiler($config['pluginOperationTimeBoiler.toleranceTemperatureFlowBoiler']);
 
 $pluginMonitoringKeepAlive = new PluginMonitoringKeepAlive();
 
-$pluginMQTTPublisher = new PluginMQTTPublisher($config['mqttBroker']);
+$pluginMQTTPublisher = new PluginMQTTPublisher($config['pluginMQTTPublisher.mqttBroker']);
 
 $pluginHandler->register($pluginMonitoringKeepAlive);
 $pluginHandler->register($pluginCommandQueue);

@@ -12,9 +12,12 @@
   "pluginTemperatureDifferenceBufferTop": true,
   "pluginOperationTimeBoiler": true,
   "pluginMonitoringKeepAlive": false,
-  "intervalCounterBoilerStart": 86400,
-  "intervalTemperatureDifferenceHotWater": 3600,
-  "intervalTemperatureDifferenceBufferTop": 3600,
+  "pluginCounterBoilerStart.interval": 86400,
+  "pluginTemperatureDifferenceHotWater.interval": 3600,
+  "pluginTemperatureDifferenceBufferTop.interval": 3600,
+  "pluginOperationTimeBoiler.interval": 60,
+  "pluginOperationTimeBoiler.periodLength": 86400,
+  "pluginOperationTimeBoiler.toleranceTemperatureFlowBoiler": 3,
   "storagePath": "/tmp",
-  "mqttBroker": "mqtt://mqtt:xvD75rZ@192.168.178.20:1883/systa-bridge/monitor"
+  "pluginMQTTPublisher.mqttBroker": "mqtt://mqtt:xvD75rZ@192.168.178.20:1883/systa-bridge/monitor"
 }
