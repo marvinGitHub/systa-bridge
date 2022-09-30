@@ -49,6 +49,6 @@ class Helper
         $reference = new DateTimeImmutable();
         $end = $reference->add($overlap);
 
-        return $end->getTimestamp() - $reference->getTimestamp();
+        return 1 + ($end->getTimestamp() - $reference->getTimestamp());
     }
 }
