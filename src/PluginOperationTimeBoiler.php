@@ -65,30 +65,32 @@ class PluginOperationTimeBoiler extends PluginAbstract
         if (empty($this->temperatureMin) || $temperatureCurrent <= $this->temperatureMin) {
             $this->temperatureMin = $temperatureCurrent;
             $this->timestampTemperatureMin = time();
-            return;
         }
 
-        if (empty($this->temperatureMax) || $temperatureCurrent >= $this->temperatureMax) {
+        if (empty($this->timestampTemperatureMax)) {
             $this->temperatureMax = $temperatureCurrent;
             $this->timestampTemperatureMax = time();
-            return;
         }
 
-        if ($temperatureCurrent + $this->getToleranceTemperatureFlowBoiler() >= $this->temperatureMax) {
-            return;
+        if ($temperatureCurrent > $this->temperatureMax) {
+            $this->temperatureMax = $temperatureCurrent;
+            $this->timestampTemperatureMax = time();
+
+            // override current operation time
+            $this->operationTimes[$this->timestampTemperatureMin] = [$this->timestampTemperatureMin, $this->timestampTemperatureMax];
+
+            $operationTimeMinutes = ($this->timestampTemperatureMax - $this->timestampTemperatureMin) / 60;
+
+            if (0 < $operationTimeMinutes) {
+                $context->getMonitor()->set('timestampOperationTimeStart', $this->timestampTemperatureMin);
+                $context->getMonitor()->set('timestampOperationTimeEnd', $this->timestampTemperatureMax);
+                $context->getMonitor()->set('operationTimeMinutesBoiler', (int)$operationTimeMinutes);
+            }
         }
 
-        $operationTimeMinutes = ($this->timestampTemperatureMax - $this->timestampTemperatureMin) / 60;
-
-        if (0 >= $operationTimeMinutes) {
+        if ($temperatureCurrent + $this->getToleranceTemperatureFlowBoiler() > $this->temperatureMax) {
             return;
         }
-
-        $this->operationTimes[] = [$this->timestampTemperatureMin, $this->timestampTemperatureMax];
-
-        $context->getMonitor()->set('timestampOperationTimeStart', $this->timestampTemperatureMin);
-        $context->getMonitor()->set('timestampOperationTimeEnd', $this->timestampTemperatureMax);
-        $context->getMonitor()->set('operationTimeMinutesBoiler', (int)$operationTimeMinutes);
 
         $this->temperatureMin = null;
         $this->temperatureMax = null;
@@ -110,8 +112,9 @@ class PluginOperationTimeBoiler extends PluginAbstract
                 $operationTime[0],
                 $operationTime[1]
             );
-            if (!$intersectionSeconds) {
+            if (0 >= $intersectionSeconds) {
                 unset($this->operationTimes[$i]);
+                continue;
             }
             $operationTimeSecondsPeriod += $intersectionSeconds;
         }
