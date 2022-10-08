@@ -2,6 +2,9 @@
 
 class PluginHandler
 {
+    /**
+     * @var PluginContext
+     */
     private $defaultContext;
     private $plugins;
 
@@ -50,8 +53,8 @@ class PluginHandler
                 $plugin->run($this->getDefaultContext());
             }
         } catch (Exception $e) {
-            echo $e->getMessage();
-            echo $e->getTraceAsString();
+            $this->getDefaultContext()->getLog()->append($e->getMessage());
+            $this->getDefaultContext()->getLog()->append($e->getTraceAsString());
         }
     }
 }
