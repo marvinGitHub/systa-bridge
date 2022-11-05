@@ -84,8 +84,6 @@ class Monitor
             $this->data['temperatureBufferTop'] = hexdec(substr($message, 48, 4)) * 0.1;
             $this->data['temperatureBufferBottom'] = hexdec(substr($message, 52, 4)) * 0.1;
             $this->data['temperatureCirculation'] = hexdec(substr($message, 56, 4)) * 0.1;
-            $this->data['temperatureDifferenceFlowSetCurrentCircuit1'] = abs($this->data['temperatureSetFlowCircuit1'] - $this->data['temperatureFlowCircuit1']);
-            $this->data['temperatureDifferenceFlowSetCurrentCircuit2'] = abs($this->data['temperatureSetFlowCircuit2'] - $this->data['temperatureFlowCircuit2']);
             $this->data['temperatureDifferenceFlowReturnCircuit1'] = abs($this->data['temperatureFlowCircuit1'] - $this->data['temperatureReturnCircuit1']);
             $this->data['temperatureDifferenceFlowReturnCircuit2'] = abs($this->data['temperatureFlowCircuit2'] - $this->data['temperatureReturnCircuit2']);
         }
@@ -192,9 +190,21 @@ class Monitor
             $this->data['circulationPumpDifferentialGap'] = hexdec(substr($message, 34, 2)) * 0.1;
         }
 
+        $this->calculateAdditionalValues();
         $this->applyCorrections();
         $this->filterDeactivatedCircuitValues();
         $this->save();
+    }
+
+    private function calculateAdditionalValues()
+    {
+        if (isset($this->data['temperatureSetFlowCircuit1']) && isset($this->data['temperatureFlowCircuit1'])) {
+            $this->data['temperatureDifferenceFlowSetCurrentCircuit1'] = abs($this->data['temperatureSetFlowCircuit1'] - $this->data['temperatureFlowCircuit1']);
+        }
+
+        if (isset($this->data['temperatureSetFlowCircuit2']) && isset($this->data['temperatureFlowCircuit2'])) {
+            $this->data['temperatureDifferenceFlowSetCurrentCircuit2'] = abs($this->data['temperatureSetFlowCircuit2'] - $this->data['temperatureFlowCircuit2']);
+        }
     }
 
     private function getHeatingInformation(string $message): array
