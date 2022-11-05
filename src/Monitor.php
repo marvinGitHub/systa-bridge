@@ -84,6 +84,8 @@ class Monitor
             $this->data['temperatureBufferTop'] = hexdec(substr($message, 48, 4)) * 0.1;
             $this->data['temperatureBufferBottom'] = hexdec(substr($message, 52, 4)) * 0.1;
             $this->data['temperatureCirculation'] = hexdec(substr($message, 56, 4)) * 0.1;
+            $this->data['temperatureDifferenceFlowSetCurrentCircuit1'] = abs($this->data['temperatureSetFlowCircuit1'] - $this->data['temperatureFlowCircuit1']);
+            $this->data['temperatureDifferenceFlowSetCurrentCircuit2'] = abs($this->data['temperatureSetFlowCircuit2'] - $this->data['temperatureFlowCircuit2']);
             $this->data['temperatureDifferenceFlowReturnCircuit1'] = abs($this->data['temperatureFlowCircuit1'] - $this->data['temperatureReturnCircuit1']);
             $this->data['temperatureDifferenceFlowReturnCircuit2'] = abs($this->data['temperatureFlowCircuit2'] - $this->data['temperatureReturnCircuit2']);
         }
