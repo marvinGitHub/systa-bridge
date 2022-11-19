@@ -71,7 +71,7 @@ class Monitor
             $message = str_replace('fc200c01', '', $message);
 
             $this->data['timestamp'] = time();
-            $this->data['temperatureOutside'] = hexdec(substr($message, 8, 4)) * 0.1;
+            $this->data['temperatureOutside'] = Helper::unsignedWordToSignedInt(substr($message, 8, 4)) * 0.1;
             $this->data['temperatureHotWater'] = hexdec(substr($message, 12, 4)) * 0.1;
             $this->data['temperatureFlowBoiler'] = hexdec(substr($message, 16, 4)) * 0.1;
             $this->data['temperatureReturnBoiler'] = hexdec(substr($message, 20, 4)) * 0.1;

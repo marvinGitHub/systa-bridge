@@ -2,6 +2,15 @@
 
 class Helper
 {
+    public static function unsignedWordToSignedInt(string $hex)
+    {
+        if (false === preg_match('/[a-f0-9]{4}/', $hex)) {
+            return;
+        }
+
+        return unpack('s', pack('v', hexdec($hex)))[1];
+    }
+
     public static function getState(int $states, int $bit)
     {
         if (($bit < 0) || ($bit > 12)) {
