@@ -8,7 +8,7 @@ class Helper
             return;
         }
 
-        return unpack('s', pack('v', hexdec($hex)))[1];
+        return unpack('s', pack('S', hexdec($hex)))[1];
     }
 
     public static function getState(int $states, int $bit)
