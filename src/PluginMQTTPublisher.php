@@ -29,7 +29,11 @@ class PluginMQTTPublisher extends PluginAbstract
 
             $mqtt = new Bluerhinos\phpMQTT($broker['host'], $broker['port'], $broker['user']);
 
-            $mqtt->connect(true, null, $broker['user'], $broker['pass']);
+            $connected = $mqtt->connect(true, null, $broker['user'], $broker['pass']);
+
+            if (!$connected) {
+                throw new RuntimeException(sprintf('Unable to connect to mqtt broker: %s', $broker['host']));
+            }
 
             foreach ($context->getMonitor()->load() as $key => $value) {
                 $mqtt->publish(sprintf('%s/%s', ltrim($broker['path'], '/'), $key), json_encode(['value' => $value]));
