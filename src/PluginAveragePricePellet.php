@@ -37,7 +37,7 @@ class PluginAveragePricePellet extends PluginAbstract
         ]);
 
         if (!$response) {
-            $context->getLog()->append(sprintf('%s: no price data received', static::class));
+            $context->getLog()->print('info', sprintf('%s: no price data received', static::class));
             return;
         }
 

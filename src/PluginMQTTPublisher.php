@@ -41,9 +41,9 @@ class PluginMQTTPublisher extends PluginAbstract
 
             $mqtt->close();
         } catch (Exception $e) {
-            $context->getLog()->append(sprintf('%s: failed publishing data', static::class));
-            $context->getLog()->append($e->getMessage());
-            $context->getLog()->append($e->getTraceAsString());
+            $context->getLog()->print('error', sprintf('%s: failed publishing data', static::class));
+            $context->getLog()->print('error', $e->getMessage());
+            $context->getLog()->print('error', $e->getTraceAsString());
         }
     }
 }

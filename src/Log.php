@@ -2,25 +2,54 @@
 
 class Log
 {
+    const LOG = 'log';
+    const DEBUG = 'debug';
+    const ERROR = 'error';
+
+    const INFO = 'info';
+
     private $pathname;
 
-    public function __construct(string $pathname)
+    private $verbose = false;
+
+    public function __construct(string $pathname, bool $verbose = false)
     {
         $this->pathname = $pathname;
+        $this->verbose = $verbose;
         $this->init();
+    }
+
+    public function setVerbose(bool $verbose)
+    {
+        $this->verbose = $verbose;
     }
 
     public function init()
     {
         if (!file_exists($this->pathname)) {
             touch($this->pathname);
-            $this->append('SystaBridge System Log');
+            $this->print(Log::LOG, 'SystaBridge System Log');
         }
     }
 
-    public function append(string $content)
+    public function print(string $type, string $content)
     {
-        return file_put_contents($this->pathname, sprintf('[%u] %s%s', time(), $content, PHP_EOL), FILE_APPEND);
+        $doLog = $type === Log::LOG || $type === Log::ERROR || $type === Log::INFO || $type === Log::DEBUG && $this->verbose === true;
+
+        if (!$doLog) {
+            return false;
+        }
+
+        switch ($type) {
+            case Log::LOG:
+                $message = sprintf('%s%s', $content, PHP_EOL);
+                break;
+            default:
+                $message = sprintf('[%u] (%s) %s%s', time(), $type, $content, PHP_EOL);
+                break;
+        }
+
+        return file_put_contents($this->pathname, $message, FILE_APPEND);
     }
 
     public function clear()

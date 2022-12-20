@@ -19,5 +19,6 @@
   "pluginOperationTimeBoiler.periodLength": 86400,
   "pluginOperationTimeBoiler.toleranceTemperatureFlowBoiler": 3,
   "storagePath": "/tmp",
-  "pluginMQTTPublisher.mqttBroker": "mqtt://mqtt:xvD75rZ@192.168.178.20:1883/systa-bridge/monitor"
+  "pluginMQTTPublisher.mqttBroker": "mqtt://mqtt:xvD75rZ@192.168.178.20:1883/systa-bridge/monitor",
+  "verbose": false
 }

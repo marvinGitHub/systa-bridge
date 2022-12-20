@@ -53,8 +53,8 @@ class PluginHandler
                 $plugin->run($this->getDefaultContext());
             }
         } catch (Exception $e) {
-            $this->getDefaultContext()->getLog()->append($e->getMessage());
-            $this->getDefaultContext()->getLog()->append($e->getTraceAsString());
+            $this->getDefaultContext()->getLog()->print('error', $e->getMessage());
+            $this->getDefaultContext()->getLog()->print('error', $e->getTraceAsString());
         }
     }
 }

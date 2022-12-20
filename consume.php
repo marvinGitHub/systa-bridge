@@ -8,7 +8,7 @@ if (false === $config = $configuration->load()) {
     exit;
 }
 
-$log = new Log($config['logfile']);
+$log = new Log($config['logfile'], $config['verbose']);
 
 $monitor = new Monitor($config['monitor']);
 
@@ -64,6 +64,8 @@ $pluginHandler->register($pluginMQTTPublisher);
 
 while (true) {
     $config = $configuration->load();
+
+    $log->setVerbose($config['verbose']);
 
     $config['dump'] ? $dump->enable() : $dump->disable();
 

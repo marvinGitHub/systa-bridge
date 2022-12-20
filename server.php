@@ -59,7 +59,7 @@ try {
         exit;
     }
 
-    $log = new Log($config['logfile']);
+    $log = new Log($config['logfile'], $config['verbose']);
     $queue = new Queue($config['queue']);
     $systaBridge = new SystaBridge();
     $monitor = new Monitor($config['monitor']);
@@ -98,7 +98,7 @@ HTML;
         case 'clearSystemLog':
             $log->clear();
             stdout($message = 'System Log has been cleared.');
-            $log->append($message);
+            $log->print('info', $message);
             exit;
         case 'getSystemLog':
             stdout($log->load());
@@ -106,25 +106,25 @@ HTML;
         case 'resetSystemConfiguration':
             $configuration->restore();
             stdout($message = 'System Configuration has been restored to default values.');
-            $log->append($message);
+            $log->print('info', $message);
             exit;
         case 'startMonitoring':
             $config['pluginMonitoringKeepAlive'] = true;
             $configuration->save($config);
             stdout($message = 'Monitoring has been enabled.');
-            $log->append($message);
+            $log->print('info', $message);
             exit;
         case 'stopMonitoring':
             $config['pluginMonitoringKeepAlive'] = false;
             $configuration->save($config);
             $monitor->clear();
             stdout($message = 'Monitoring has been disabled.');
-            $log->append($message);
+            $log->print('info', $message);
             exit;
         case 'sendSystaCommand':
             if (empty($_POST['systaCommand'])) {
                 stdout($message = 'No systa command provided.');
-                $log->append($message);
+                $log->print('error', $message);
                 exit;
             }
             $allowUndocumentedCommands = isset($_POST['allowUndocumentedCommands']);
@@ -138,20 +138,20 @@ HTML;
             }
             if (count($invalid)) {
                 stdout($message = sprintf('Unsupported systa commands provided: %s', implode(', ', $invalid)));
-                $log->append($message);
+                $log->print('error', $message);
                 exit;
             }
             foreach ($valid as $systaCommand) {
                 $queue->queue($systaCommand);
                 stdout($message = sprintf('Command %s has been added to queue.', $systaCommand));
-                $log->append($message);
+                $log->print('info', $message);
             }
             exit;
         case 'showCommandQueue':
-            $log->append('Show command queue');
+            $log->print('info', 'Show command queue');
             if (empty($commandQueue = $queue->load())) {
                 stdout($message = 'Command queue is empty.');
-                $log->append($message);
+                $log->print('info', $message);
                 exit;
             }
             stdout($commandQueue);
@@ -159,22 +159,22 @@ HTML;
         case 'clearCommandQueue':
             $queue->clear();
             stdout($message = 'Command queue has been cleared.');
-            $log->append($message);
+            $log->print('info', $message);
             exit;
         case 'showMonitor':
-            $log->append('Load monitor.');
+            $log->print('info', 'Load monitor.');
             if (empty($page = $monitor->load())) {
                 stdout($message = 'No monitoring data available.');
-                $log->append($message);
+                $log->print('info', $message);
                 exit;
             }
             printJSON($page);
             exit;
         case 'showDump':
-            $log->append('Load dump');
+            $log->print('info', 'Load dump');
             if (empty($data = $dump->load())) {
                 stdout($message = 'No dump available.');
-                $log->append($message);
+                $log->print('info', $message);
                 exit;
             }
             stdout($data);
@@ -182,28 +182,30 @@ HTML;
         case 'clearDump':
             $dump->clear();
             stdout($message = 'Dump has been cleared.');
-            $log->append($message);
+            $log->print('info', $message);
             exit;
         case 'reboot':
             stdout($message = 'Rebooting...');
-            $log->append($message);
+            $log->print('info', $message);
             exec('reboot');
             exit;
         case 'configureSerialDevice':
             if ($serialDeviceConfiguration->alreadyConfigured()) {
                 stdout($message = 'Serial device is already configured.');
-                $log->append($message);
+                $log->print('info', $message);
                 exit;
             }
             if (false === $serialDeviceConfiguration->configure()) {
                 stdout($message = 'Serial device configuration failed.');
+                $log->print('error', $message);
             } else {
                 stdout($message = 'Serial device configuration successful.');
+                $log->print('info', $message);
             }
-            $log->append($message);
+
             exit;
         case 'showSerialDeviceConfiguration':
-            $log->append('Load serial device configuration');
+            $log->print('info', 'Load serial device configuration');
             if (empty($currentSerialDeviceConfiguration = $serialDeviceConfiguration->load())) {
                 stdout($message = 'Failed getting current serial device configuration.');
                 exit;
@@ -211,41 +213,41 @@ HTML;
             stdout($currentSerialDeviceConfiguration);
             exit;
         case 'findSerialDevices':
-            $log->append('Searching for serial devices...');
+            $log->print('info', 'Searching for serial devices...');
             $serialDevices = $serialDeviceConfiguration->findSerialDevices();
             if (empty($serialDevices)) {
                 stdout($message = 'No serial device found.');
-                $log->append($message);
+                $log->print('error', $message);
                 exit;
             }
             stdout($message = 'Found serial devices:');
-            $log->append($message);
+            $log->print('info', $message);
             stdout($message = implode(', ', $serialDevices));
-            $log->append($message);
+            $log->print('log', $message);
             exit;
         case 'enableDump':
             $config['dump'] = true;
             $configuration->save($config);
             stdout($message = 'Dump has been enabled.');
-            $log->append($message);
+            $log->print('info', $message);
             exit;
         case 'disableDump':
             $config['dump'] = false;
             $configuration->save($config);
             stdout($message = 'Dump has been disabled.');
-            $log->append($message);
+            $log->print('info', $message);
             exit;
         case 'disablePluginMQTTPublisher':
             $config['pluginMQTTPublisher'] = false;
             $configuration->save($config);
             stdout($message = 'Plugin MQTT Publisher has been disabled.');
-            $log->append($message);
+            $log->print('info', $message);
             exit;
         case 'enablePluginMQTTPublisher':
             $config['pluginMQTTPublisher'] = true;
             $configuration->save($config);
             stdout($message = 'Plugin MQTT Publisher has been enabled.');
-            $log->append($message);
+            $log->print('info', $message);
             exit;
     }
 } catch (Exception $e) {

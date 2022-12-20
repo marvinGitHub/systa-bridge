@@ -37,7 +37,7 @@ class PluginTelegramProcessor extends PluginAbstract
         $validChecksum = $checksum === $expected;
 
         if (!$validChecksum) {
-            $context->getLog()->append(sprintf('Checksum mismatch. telegram: %s expected: %s computed: %s', $telegram, $expected, $checksum));
+            $context->getLog()->print('error', sprintf('Checksum mismatch. telegram: %s expected: %s computed: %s', $telegram, $expected, $checksum));
         }
 
         if ($validChecksum) {
