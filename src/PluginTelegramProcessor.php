@@ -8,6 +8,8 @@ class PluginTelegramProcessor extends PluginAbstract
         $isTelegram =
             1 === preg_match('/(fc200c01[\da-f]{62})/', $value, $matches) ||
             1 === preg_match('/(fc220c02[\da-f]{66})/', $value, $matches) ||
+            1 === preg_match('/(fc270c01[\da-f]{76})/', $value, $matches) ||
+            1 === preg_match('/(fc230c02[\da-f]{68})/', $value, $matches) ||
             1 === preg_match('/(fd170c03[\da-f]{60})/', $value, $matches) ||
             1 === preg_match('/(fd05aa0c[\da-f]{8})/', $value, $matches) ||
             1 === preg_match('/(fd140c03[\da-f]{38})/', $value, $matches) ||

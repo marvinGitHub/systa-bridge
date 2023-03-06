@@ -65,10 +65,14 @@ class Monitor
 
     public function process(string $message)
     {
-        // Systa Comfort, Monitordatensatz 1
-        if (0 === strpos($message, 'fc200c01')) {
+        // Systa Comfort
+        $isHeaderMonitoringData1Firmware1 = 0 === strpos($message, 'fc200c01'); // Header Firmware 1.32.1
+        $isHeaderMonitoringData1Firmware2 = 0 === strpos($message, 'fc270c01'); // Header Firmware 2.14.1
+
+        if ($isHeaderMonitoringData1Firmware1 || $isHeaderMonitoringData1Firmware2) {
 
             $message = str_replace('fc200c01', '', $message);
+            $message = str_replace('fc270c01', '', $message);
 
             $this->data['timestamp'] = time();
             $this->data['temperatureOutside'] = Helper::unsignedWordToSignedInt(substr($message, 8, 4)) * 0.1;
@@ -88,9 +92,13 @@ class Monitor
             $this->data['temperatureDifferenceFlowReturnCircuit2'] = abs($this->data['temperatureFlowCircuit2'] - $this->data['temperatureReturnCircuit2']);
         }
 
-        // Systa Comfort, Monitordatensatz 2
-        if (0 === strpos($message, 'fc220c02')) {
+        // Systa Comfort
+        $isHeaderMonitoringData2Firmware1 = 0 === strpos($message, 'fc220c02'); // Header Firmware 1.32.1
+        $isHeaderMonitoringData2Firmware2 = 0 === strpos($message, 'fc230c02'); // Header Firmware 2.14.1
+
+        if ($isHeaderMonitoringData2Firmware1 || $isHeaderMonitoringData2Firmware2) {
             $message = str_replace('fc220c02', '', $message);
+            $message = str_replace('fc230c02', '', $message);
 
             $states = hexdec(substr($message, 24, 4));
 

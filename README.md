@@ -10,7 +10,8 @@
 
 ## Supported Firmware Versions
 
-- Systa Comfort Generation 1 Rev. 1.32.1 (build date 29.09.2008)
+- Systa Comfort Hardware Generation 1 Firmware Rev. 1.32.1 (build date 29.09.2008)
+- Systa Comfort Hardware Generation 2 Firmware Rev. 2.14.1 (build date 06.06.2016)
 
 ## Build Instructions
 
