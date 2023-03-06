@@ -15,8 +15,8 @@ class PluginTelegramProcessor extends PluginAbstract
             1 === preg_match('/(fd140c03[\da-f]{38})/', $value, $matches) ||
             1 === preg_match('/(fd2f0c0301[\da-f]{90})/', $value, $matches) ||
             1 === preg_match('/(fd2f0c0300[\da-f]{90})/', $value, $matches) ||
-            1 === preg_match(sprintf('/(%s)/', SystaBridge::COMMAND_START_MONITORING_V1), $value, $matches) ||
-            1 === preg_match(sprintf('/(%s)/', SystaBridge::COMMAND_START_MONITORING_V2), $value, $matches);
+            1 === preg_match(sprintf('/(%s)/', SystaBridge::COMMAND_START_MONITORING_LEGACY), $value, $matches) ||
+            1 === preg_match(sprintf('/(%s)/', SystaBridge::COMMAND_START_MONITORING), $value, $matches);
 
         if (!$isTelegram) {
             return null;
