@@ -233,8 +233,14 @@ class Monitor
             $this->data['errorCodeBoiler'] = 0;
         }
 
+        // check if sensor is not connected / broken
         if (((int)($this->data['temperatureBufferBottom'] * 10)) === 65247) {
             $this->data['temperatureBufferBottom'] = 0;
+        }
+
+        // check if sensor is not connected / broken
+        if (((int)($this->data['temperatureCirculation'] * 10)) === 65247) {
+            $this->data['temperatureCirculation'] = 0;
         }
     }
 
