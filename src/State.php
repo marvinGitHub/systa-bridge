@@ -13,9 +13,9 @@ class State
     const STATE_PUMP_BOILER_ON = 5;
     const STATE_PUMP_BOILER_OFF = 6;
     const STATE_PUMP_BOILER_UNKNOWN = 7;
-    const STATE_BURNER_ON = 5;
-    const STATE_BURNER_OFF = 6;
-    const STATE_BURNER_UNKNOWN = 7;
+    const STATE_BURNER_ON = 8;
+    const STATE_BURNER_OFF = 9;
+    const STATE_BURNER_UNKNOWN = 10;
 
     private $serialDeviceConfiguration;
     private $monitor;
