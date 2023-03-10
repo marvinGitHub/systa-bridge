@@ -25,13 +25,20 @@ $statesSystem = [
     State::STATE_UNKNOWN => 'Unknown'
 ];
 
-$statesBoiler = [
-    State::STATE_BOILER_ON => 'Running',
-    State::STATE_BOILER_OFF => 'Idle',
-    State::STATE_BOILER_UNKNOWN => 'Unknown'
+$statesPumpBoiler = [
+    State::STATE_PUMP_BOILER_ON => 'Running',
+    State::STATE_PUMP_BOILER_OFF => 'Idle',
+    State::STATE_PUMP_BOILER_UNKNOWN => 'Unknown'
 ];
 
-$translationStateBoiler = $statesBoiler[$state->getStateBoiler()];
+$statesBurner = [
+    State::STATE_BURNER_ON => 'Running',
+    State::STATE_BURNER_OFF => 'Idle',
+    State::STATE_BURNER_UNKNOWN => 'Unknown'
+];
+
+$translationStateBoiler = $statesPumpBoiler[$state->getStatePumpBoiler()];
+$translationStateBurner = $statesBurner[$state->getStateBurner()];
 $translationStateSystem = $statesSystem[$state->getStateSystem()];
 
 $blockDocumentedCommands = '';
@@ -72,7 +79,8 @@ echo <<<HTML
 </form>
 
 <b>State System: </b>$translationStateSystem<br />
-<b>State Boiler: </b>$translationStateBoiler<br /><br />
+<b>State Pump Boiler: </b>$translationStateBoiler<br /><br />
+<b>State Burner: </b>$translationStateBurner<br /><br />
 <b>Supported Systa Commands</b><br />
 <ul>
 {$blockDocumentedCommands}

@@ -10,9 +10,12 @@ class State
     const STATE_ERROR_BOILER = 2;
     const STATE_ERROR_SENSOR = 3;
     const STATE_UNKNOWN = 4;
-    const STATE_BOILER_ON = 5;
-    const STATE_BOILER_OFF = 6;
-    const STATE_BOILER_UNKNOWN = 7;
+    const STATE_PUMP_BOILER_ON = 5;
+    const STATE_PUMP_BOILER_OFF = 6;
+    const STATE_PUMP_BOILER_UNKNOWN = 7;
+    const STATE_BURNER_ON = 5;
+    const STATE_BURNER_OFF = 6;
+    const STATE_BURNER_UNKNOWN = 7;
 
     private $serialDeviceConfiguration;
     private $monitor;
@@ -42,18 +45,33 @@ class State
         return State::STATE_OK;
     }
 
-    public function getStateBoiler(): int
+    public function getStatePumpBoiler(): int
     {
         $data = $this->monitor->load();
 
         if (!isset($data['statePumpBoiler'])) {
-            return State::STATE_BOILER_UNKNOWN;
+            return State::STATE_PUMP_BOILER_UNKNOWN;
         }
 
         if (1 === (int)$data['statePumpBoiler']) {
-            return State::STATE_BOILER_ON;
+            return State::STATE_PUMP_BOILER_ON;
         }
 
-        return State::STATE_BOILER_OFF;
+        return State::STATE_PUMP_BOILER_OFF;
+    }
+
+    public function getStateBurner(): int
+    {
+        $data = $this->monitor->load();
+
+        if (!isset($data['stateBurnerContact'])) {
+            return State::STATE_BURNER_UNKNOWN;
+        }
+
+        if (1 === (int)$data['stateBurnerContact']) {
+            return State::STATE_BURNER_ON;
+        }
+
+        return State::STATE_BURNER_OFF;
     }
 }
