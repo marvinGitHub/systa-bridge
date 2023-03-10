@@ -4,6 +4,10 @@ require 'authorization.php';
 
 require 'bootstrap.php';
 
+if (function_exists('opcache_reset')) {
+    opcache_reset();
+}
+
 $configuration = new Configuration(__DIR__ . '/config/config.json', __DIR__ . '/config/default.json');
 if (false === $config = $configuration->load()) {
     echo 'Please check system configuration.';
@@ -79,7 +83,7 @@ echo <<<HTML
 </form>
 
 <b>State System: </b>$translationStateSystem<br />
-<b>State Pump Boiler: </b>$translationStateBoiler<br /><br />
+<b>State Pump Boiler: </b>$translationStateBoiler<br />
 <b>State Burner: </b>$translationStateBurner<br /><br />
 <b>Supported Systa Commands</b><br />
 <ul>
