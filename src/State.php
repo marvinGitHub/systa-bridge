@@ -16,6 +16,16 @@ class State
     const STATE_BURNER_ON = 8;
     const STATE_BURNER_OFF = 9;
     const STATE_BURNER_UNKNOWN = 10;
+    const STATE_CIRCUIT_UNKNOWN = 11;
+    const STATE_CIRCUIT_CONTINUOUS_HEATING = 12;
+    const STATE_CIRCUIT_DISABLED = 13;
+    const STATE_CIRCUIT_SYSTEM_OFF = 14;
+    const STATE_CIRCUIT_CONTINUOUS_COMFORT = 15;
+    const STATE_CIRCUIT_SUMMER = 16;
+    const STATE_CIRCUIT_LOWERING = 17;
+    const STATE_CIRCUIT_AUTO_1 = 18;
+    const STATE_CIRCUIT_AUTO_2 = 19;
+    const STATE_CIRCUIT_AUTO_3 = 20;
 
     private $serialDeviceConfiguration;
     private $monitor;
@@ -73,5 +83,44 @@ class State
         }
 
         return State::STATE_BURNER_OFF;
+    }
+
+    private function getStateCircuit(int $state): int
+    {
+        $states = [
+            0 => State::STATE_CIRCUIT_AUTO_1,
+            1 => State::STATE_CIRCUIT_AUTO_2,
+            2 => State::STATE_CIRCUIT_AUTO_3,
+            3 => State::STATE_CIRCUIT_CONTINUOUS_HEATING,
+            4 => State::STATE_CIRCUIT_CONTINUOUS_COMFORT,
+            5 => State::STATE_CIRCUIT_LOWERING,
+            6 => State::STATE_CIRCUIT_SUMMER,
+            7 => State::STATE_CIRCUIT_DISABLED,
+            17 => State::STATE_CIRCUIT_SYSTEM_OFF
+        ];
+
+        return $states[$state] ?? State::STATE_CIRCUIT_UNKNOWN;
+    }
+
+    public function getStateCircuit1(): int
+    {
+        $data = $this->monitor->load();
+
+        if (!isset($data['operationModeCircuit1'])) {
+            return STate::STATE_CIRCUIT_UNKNOWN;
+        }
+
+        return $this->getStateCircuit($data['operationModeCircuit1']);
+    }
+
+    public function getStateCircuit2(): int
+    {
+        $data = $this->monitor->load();
+
+        if (!isset($data['operationModeCircuit2'])) {
+            return STate::STATE_CIRCUIT_UNKNOWN;
+        }
+
+        return $this->getStateCircuit($data['operationModeCircuit2']);
     }
 }

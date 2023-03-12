@@ -41,9 +41,24 @@ $statesBurner = [
     State::STATE_BURNER_UNKNOWN => 'Unknown'
 ];
 
+$statesCircuit = [
+    State::STATE_CIRCUIT_UNKNOWN => 'Unknown',
+    State::STATE_CIRCUIT_CONTINUOUS_HEATING => 'Continuous Heating',
+    State::STATE_CIRCUIT_DISABLED => 'Disabled',
+    State::STATE_CIRCUIT_SYSTEM_OFF => 'Off',
+    State::STATE_CIRCUIT_SUMMER => 'Summer',
+    State::STATE_CIRCUIT_AUTO_1 => 'Auto (1)',
+    State::STATE_CIRCUIT_AUTO_2 => 'Auto (2)',
+    State::STATE_CIRCUIT_AUTO_3 => 'Auto (3)',
+    State::STATE_CIRCUIT_CONTINUOUS_COMFORT => 'Continuous Comfort',
+    State::STATE_CIRCUIT_LOWERING => 'Lowering'
+];
+
 $translationStateBoiler = $statesPumpBoiler[$state->getStatePumpBoiler()];
 $translationStateBurner = $statesBurner[$state->getStateBurner()];
 $translationStateSystem = $statesSystem[$state->getStateSystem()];
+$translationStateCircuit1 = $statesCircuit[$state->getStateCircuit1()];
+$translationStateCircuit2 = $statesCircuit[$state->getStateCircuit2()];
 
 $blockDocumentedCommands = '';
 foreach (SystaBridge::getDocumentedCommands() as $hex => $description) {
@@ -84,7 +99,10 @@ echo <<<HTML
 
 <b>State System: </b>$translationStateSystem<br />
 <b>State Pump Boiler: </b>$translationStateBoiler<br />
-<b>State Burner: </b>$translationStateBurner<br /><br />
+<b>State Burner: </b>$translationStateBurner<br />
+<b>Circuit 1: </b>$translationStateCircuit1<br />
+<b>Circuit 2: </b>$translationStateCircuit2<br />
+<br />
 <b>Supported Systa Commands</b><br />
 <ul>
 {$blockDocumentedCommands}
