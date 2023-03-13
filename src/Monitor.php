@@ -72,7 +72,7 @@ class Monitor
         if ($isHeaderMonitoringData1Firmware1 || $isHeaderMonitoringData1Firmware2) {
 
             $message = str_replace('fc200c01', '', $message);
-            $message = str_replace('fc270c01', '', $message);
+            $message = str_replace('fc270c01', '', $message); // e.g. fc270c01 (header) 13034414008a027e02b20000010500000212017a023a0124028c0273fedf02000921180374 (payload) 13 (checksum)
 
             $this->data['timestamp'] = time();
             $this->data['temperatureOutside'] = Helper::unsignedWordToSignedInt(substr($message, 8, 4)) * 0.1;

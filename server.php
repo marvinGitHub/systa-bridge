@@ -15,6 +15,7 @@ try {
         'getServerStatus',
         'clearCommandQueue',
         'showMonitor',
+        'clearMonitor',
         'showDump',
         'clearDump',
         'reboot',
@@ -67,6 +68,14 @@ try {
     $serialDeviceConfiguration = new SerialDeviceConfiguration($config['serialDevice']);
     $storage = new KeyValueStorage($config['storagePath']);
 
+    function queue(string $command)
+    {
+        global $queue, $log;
+        $queue->queue($command);
+        stdout($message = sprintf('Command %s has been added to queue.', $command));
+        $log->print('info', $message);
+    }
+
     switch ($command) {
         case 'saveSystemConfiguration':
             if (!isset($_POST['config'])) {
@@ -117,7 +126,7 @@ HTML;
         case 'stopMonitoring':
             $config['pluginMonitoringKeepAlive'] = false;
             $configuration->save($config);
-            $monitor->clear();
+            $queue->queue(SystaBridge::COMMAND_STOP_MONITORING);
             stdout($message = 'Monitoring has been disabled.');
             $log->print('info', $message);
             exit;
@@ -142,9 +151,7 @@ HTML;
                 exit;
             }
             foreach ($valid as $systaCommand) {
-                $queue->queue($systaCommand);
-                stdout($message = sprintf('Command %s has been added to queue.', $systaCommand));
-                $log->print('info', $message);
+                queue($systaCommand);
             }
             exit;
         case 'showCommandQueue':
@@ -169,6 +176,12 @@ HTML;
                 exit;
             }
             printJSON($page);
+            exit;
+        case 'clearMonitor':
+            $monitor->clear();
+            stdout($message = 'Monitor has been cleared.');
+            $log->print('info', $message);
+            exit;
             exit;
         case 'showDump':
             $log->print('info', 'Load dump');

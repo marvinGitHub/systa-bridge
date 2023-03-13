@@ -79,6 +79,7 @@ echo <<<HTML
 </pre>
 <form action="server.php" method="post">
     <button name="command" value="showMonitor">Show Monitor</button>
+    <button name="command" value="clearMonitor">Clear Monitor</button>
     <button name="command" value="getSystemLog">Show System Log</button>    
     <button name="command" value="clearSystemLog">Clear System Log</button>
     <button name="command" value="showSystemConfigurationEditor">Show System Configuration</button>
