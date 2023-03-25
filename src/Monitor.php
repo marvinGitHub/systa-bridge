@@ -46,21 +46,16 @@ class Monitor
         return file_put_contents($this->getPathname(), json_encode($this->data, JSON_PRETTY_PRINT));
     }
 
-    public function getErrorCodes(): array
+    public function getErrorCodeBoiler(): int
     {
-        $errorCodes = [null, null];
-
         $data = $this->load();
+        return $data['errorCodeBoiler'] ?? 0;
+    }
 
-        if (isset($data['errorCodeBoiler'])) {
-            $errorCodes[0] = $data['errorCodeBoiler'];
-        }
-
-        if (isset($data['errorCodeSensor'])) {
-            $errorCodes[1] = $data['errorCodeSensor'];
-        }
-
-        return $errorCodes;
+    public function getErrorCodeSensor(): int
+    {
+        $data = $this->load();
+        return $data['errorCodeSensor'] ?? 0;
     }
 
     public function process(string $message)
@@ -236,12 +231,16 @@ class Monitor
         // check if sensor is not connected / broken
         if (((int)($this->data['temperatureBufferBottom'] * 10)) === 65247) {
             $this->data['temperatureBufferBottom'] = 0;
+            $this->data['errorCodeSensor'] = SystaBridge::ERROR_SENSOR_TEMPERATURE_BUFFER_BOTTOM_IMPLAUSIBLE;
         }
 
         // check if sensor is not connected / broken
         if (((int)($this->data['temperatureCirculation'] * 10)) === 65247) {
             $this->data['temperatureCirculation'] = 0;
+            $this->data['errorCodeSensor'] = SystaBridge::ERROR_SENSOR_TEMPERATURE_CIRCULATION_IMPLAUSIBLE;
         }
+
+        // TODO store more then one sensor error
     }
 
     public function isActivatedCircuit1(): bool

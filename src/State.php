@@ -42,13 +42,13 @@ class State
             return State::STATE_NOT_CONNECTED;
         }
 
-        $errorCodes = $this->monitor->getErrorCodes();
+        $this->monitor->load();
 
-        if (!empty($errorCodes[0])) {
+        if (!empty($this->monitor->getErrorCodeBoiler())) {
             return State::STATE_ERROR_BOILER;
         }
 
-        if (!empty($errorCodes[1])) {
+        if (!empty($this->monitor->getErrorCodeBoiler())) {
             return State::STATE_ERROR_SENSOR;
         }
 

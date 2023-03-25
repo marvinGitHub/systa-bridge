@@ -2,10 +2,13 @@
 
 class SystaBridge
 {
+    const ERROR_SENSOR_TEMPERATURE_BUFFER_BOTTOM_IMPLAUSIBLE = 9000;
+    const ERROR_SENSOR_TEMPERATURE_CIRCULATION_IMPLAUSIBLE = 9001;
+
     const COMMAND_START_MONITORING_LEGACY = '0a01141f';
     const COMMAND_START_MONITORING = '0a0114e1';
     const COMMAND_STOP_MONITORING = '0a0115e0';
-    const COMMAND_CIRCUIT1_CONTINOUS_HEATING = '0a0a1d0c1153455400020103c0';
+    const COMMAND_CIRCUIT1_CONTINUOUS_HEATING = '0a0a1d0c1153455400020103c0';
     const COMMAND_CIRCUIT2_CONTINUOUS_HEATING = '0a0a1d0c115345540188010339';
 
     const COMMAND_CIRCUIT1_COMFORT = '0a0a1d0c1153455400020104bf';
@@ -17,7 +20,7 @@ class SystaBridge
             '0a0a1d0c1153455400020100c3' => 'Circuit1: Set operation mode to auto (1)',
             '0a0a1d0c1153455400020101c2' => 'Circuit1: Set operation mode to auto (2)',
             '0a0a1d0c1153455400020102c1' => 'Circuit1: Set operation mode to auto (3)',
-            SystaBridge::COMMAND_CIRCUIT1_CONTINOUS_HEATING => 'Circuit1: Set operation mode to continuous heating',
+            SystaBridge::COMMAND_CIRCUIT1_CONTINUOUS_HEATING => 'Circuit1: Set operation mode to continuous heating',
             SystaBridge::COMMAND_CIRCUIT1_COMFORT => 'Circuit1: Set operation mode to continuous comfort',
             '0a0a1d0c1153455400020105be' => 'Circuit1: Set operation mode to lowering',
             '0a0a1d0c1153455400020106bd' => 'Circuit1: Set operation mode to summer',

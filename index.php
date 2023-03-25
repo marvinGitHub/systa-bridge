@@ -60,6 +60,17 @@ $translationStateSystem = $statesSystem[$state->getStateSystem()];
 $translationStateCircuit1 = $statesCircuit[$state->getStateCircuit1()];
 $translationStateCircuit2 = $statesCircuit[$state->getStateCircuit2()];
 
+$errorCodesBoiler = [
+    0 => '---'
+];
+
+$errorCodesSensor = [
+    0 => '---'
+];
+
+$translationErrorCodeBoiler = $errorCodesBoiler[$monitor->getErrorCodeBoiler()] ?? $monitor->getErrorCodeBoiler();
+$translationErrorCodeSensor = $errorCodesSensor[$monitor->getErrorCodeSensor()] ?? $monitor->getErrorCodeSensor();
+
 $blockDocumentedCommands = '';
 foreach (SystaBridge::getDocumentedCommands() as $hex => $description) {
     $blockDocumentedCommands .= <<<HTML
@@ -101,6 +112,8 @@ echo <<<HTML
 <b>State System: </b>$translationStateSystem<br />
 <b>State Pump Boiler: </b>$translationStateBoiler<br />
 <b>State Burner: </b>$translationStateBurner<br />
+<b>Error Code Boiler: </b>$translationErrorCodeBoiler<br />
+<b>Error Code Sensor: </b>$translationErrorCodeSensor<br />
 <b>Circuit 1: </b>$translationStateCircuit1<br />
 <b>Circuit 2: </b>$translationStateCircuit2<br />
 <br />
