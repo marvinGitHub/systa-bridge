@@ -3,7 +3,9 @@
 class Monitor
 {
     private $directory;
-    private $data = [];
+    private $data = [
+        'errorCodeSensor' => []
+    ];
 
     public function __construct(string $directory)
     {
@@ -52,10 +54,12 @@ class Monitor
         return $data['errorCodeBoiler'] ?? 0;
     }
 
-    public function getErrorCodeSensor(): int
+    public function getErrorCodeSensor(): array
     {
         $data = $this->load();
-        return $data['errorCodeSensor'] ?? 0;
+        return array_filter($data['errorCodeSensor'], function ($errorCode) {
+            return !empty($errorCode);
+        });
     }
 
     public function process(string $message)
@@ -121,7 +125,7 @@ class Monitor
             $this->data['operationTimeHoursBoiler'] = hexdec(substr($message, 28, 8));
             $this->data['counterBoilerStart'] = hexdec(substr($message, 36, 8));
             $this->data['errorCodeBoiler'] = hexdec(substr($message, 44, 4));
-            $this->data['errorCodeSensor'] = hexdec(substr($message, 48, 2));
+            $this->data['errorCodeSensor'][] = hexdec(substr($message, 48, 2));
             $this->data['operationModeCircuit1'] = hexdec(substr($message, 50, 2));
             $this->data['niveauCircuit1'] = hexdec(substr($message, 52, 2));
             $this->data['operationModeCircuit2'] = hexdec(substr($message, 54, 2));
@@ -231,16 +235,16 @@ class Monitor
         // check if sensor is not connected / broken
         if (((int)($this->data['temperatureBufferBottom'] * 10)) === 65247) {
             $this->data['temperatureBufferBottom'] = 0;
-            $this->data['errorCodeSensor'] = SystaBridge::ERROR_SENSOR_TEMPERATURE_BUFFER_BOTTOM_IMPLAUSIBLE;
+            $this->data['errorCodeSensor'][] = State::ERROR_SENSOR_TEMPERATURE_BUFFER_BOTTOM_IMPLAUSIBLE;
         }
 
         // check if sensor is not connected / broken
         if (((int)($this->data['temperatureCirculation'] * 10)) === 65247) {
             $this->data['temperatureCirculation'] = 0;
-            $this->data['errorCodeSensor'] = SystaBridge::ERROR_SENSOR_TEMPERATURE_CIRCULATION_IMPLAUSIBLE;
+            $this->data['errorCodeSensor'][] = State::ERROR_SENSOR_TEMPERATURE_CIRCULATION_IMPLAUSIBLE;
         }
 
-        // TODO store more then one sensor error
+        $this->data['errorCodeSensor'] = array_unique($this->data['errorCodeSensor']);
     }
 
     public function isActivatedCircuit1(): bool

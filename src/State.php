@@ -27,6 +27,9 @@ class State
     const STATE_CIRCUIT_AUTO_2 = 19;
     const STATE_CIRCUIT_AUTO_3 = 20;
 
+    const ERROR_SENSOR_TEMPERATURE_BUFFER_BOTTOM_IMPLAUSIBLE = 9000;
+    const ERROR_SENSOR_TEMPERATURE_CIRCULATION_IMPLAUSIBLE = 9001;
+
     private $serialDeviceConfiguration;
     private $monitor;
 
@@ -48,7 +51,7 @@ class State
             return State::STATE_ERROR_BOILER;
         }
 
-        if (!empty($this->monitor->getErrorCodeBoiler())) {
+        if (!empty($this->monitor->getErrorCodeSensor())) {
             return State::STATE_ERROR_SENSOR;
         }
 

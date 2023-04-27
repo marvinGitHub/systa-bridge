@@ -65,16 +65,26 @@ $errorCodesBoiler = [
 ];
 
 $errorCodesSensor = [
-    0 => '---'
+    0 => '---',
+    State::ERROR_SENSOR_TEMPERATURE_CIRCULATION_IMPLAUSIBLE => sprintf('%s - Temperature Circulation Implausible', State::ERROR_SENSOR_TEMPERATURE_CIRCULATION_IMPLAUSIBLE),
+    State::ERROR_SENSOR_TEMPERATURE_BUFFER_BOTTOM_IMPLAUSIBLE => sprintf('%s - Temperature Buffer Bottom Implausible', State::ERROR_SENSOR_TEMPERATURE_BUFFER_BOTTOM_IMPLAUSIBLE),
 ];
 
 $translationErrorCodeBoiler = $errorCodesBoiler[$monitor->getErrorCodeBoiler()] ?? $monitor->getErrorCodeBoiler();
-$translationErrorCodeSensor = $errorCodesSensor[$monitor->getErrorCodeSensor()] ?? $monitor->getErrorCodeSensor();
 
 $blockDocumentedCommands = '';
 foreach (SystaBridge::getDocumentedCommands() as $hex => $description) {
     $blockDocumentedCommands .= <<<HTML
 <li><b>$hex</b> - $description</li>
+HTML;
+}
+
+$blockErrorCodeSensor = '';
+foreach ($monitor->getErrorCodeSensor() as $errorCodeSensor) {
+    $translationErrorCodeSensor = $errorCodesSensor[$errorCodeSensor] ?? $errorCodeSensor;
+
+    $blockErrorCodeSensor .= <<<HTML
+<b>Error Code Sensor: </b>$translationErrorCodeSensor<br />
 HTML;
 }
 
@@ -113,7 +123,7 @@ echo <<<HTML
 <b>State Pump Boiler: </b>$translationStateBoiler<br />
 <b>State Burner: </b>$translationStateBurner<br />
 <b>Error Code Boiler: </b>$translationErrorCodeBoiler<br />
-<b>Error Code Sensor: </b>$translationErrorCodeSensor<br />
+{$blockErrorCodeSensor}
 <b>Circuit 1: </b>$translationStateCircuit1<br />
 <b>Circuit 2: </b>$translationStateCircuit2<br />
 <br />
