@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Configuration.php';
+require_once 'ConfigurationAwareTrait.php';
 require_once 'Helper.php';
 require_once 'Log.php';
 require_once 'SystaBridge.php';

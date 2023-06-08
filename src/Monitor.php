@@ -2,14 +2,28 @@
 
 class Monitor
 {
+    use ConfigurationAwareTrait;
+
     private $directory;
     private $data = [
         'errorCodeSensor' => []
     ];
 
-    public function __construct(string $directory)
+    public function __construct(Configuration $configuration)
+    {
+        $this->setConfiguration($configuration);
+        $this->inheritConfigurationValues();
+    }
+
+    public function setDirectory(string $directory)
     {
         $this->directory = $directory;
+    }
+
+    public function inheritConfigurationValues()
+    {
+        $data = $this->getConfiguration()->load();
+        $this->setDirectory($data['monitor.path'] ?? '/tmp');
     }
 
     public function set(string $key, $value)
@@ -57,7 +71,7 @@ class Monitor
     public function getErrorCodeSensor(): array
     {
         $data = $this->load();
-        return array_filter($data['errorCodeSensor'], function ($errorCode) {
+        return array_filter($data['errorCodeSensor'] ?? [], function ($errorCode) {
             return !empty($errorCode);
         });
     }
@@ -228,18 +242,23 @@ class Monitor
 
     private function applyCorrections()
     {
+        $configuration = $this->getConfiguration()->load();
+
+        // TODO check why error code can be 65535
         if ($this->data['errorCodeBoiler'] === 65535) {
             $this->data['errorCodeBoiler'] = 0;
         }
 
         // check if sensor is not connected / broken
-        if (((int)($this->data['temperatureBufferBottom'] * 10)) === 65247) {
+        $sensorBufferBottomInstalled = $configuration['monitor.sensorBufferBottomInstalled'];
+        if ($sensorBufferBottomInstalled && ((int)($this->data['temperatureBufferBottom'] * 10)) === 65247) {
             $this->data['temperatureBufferBottom'] = 0;
             $this->data['errorCodeSensor'][] = State::ERROR_SENSOR_TEMPERATURE_BUFFER_BOTTOM_IMPLAUSIBLE;
         }
 
         // check if sensor is not connected / broken
-        if (((int)($this->data['temperatureCirculation'] * 10)) === 65247) {
+        $sensorCirculationInstalled = $configuration['monitor.sensorCirculationInstalled'] ?? false;
+        if ($sensorCirculationInstalled && ((int)($this->data['temperatureCirculation'] * 10)) === 65247) {
             $this->data['temperatureCirculation'] = 0;
             $this->data['errorCodeSensor'][] = State::ERROR_SENSOR_TEMPERATURE_CIRCULATION_IMPLAUSIBLE;
         }

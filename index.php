@@ -16,7 +16,7 @@ if (false === $config = $configuration->load()) {
 
 $log = new Log($config['logfile']);
 
-$monitor = new Monitor($config['monitor']);
+$monitor = new Monitor($configuration);
 
 $serialDeviceConfiguration = new SerialDeviceConfiguration($config['serialDevice']);
 $state = new State($serialDeviceConfiguration, $monitor);

@@ -4,7 +4,7 @@ class PluginAveragePricePellet extends PluginAbstract
 {
     const STORAGE_KEY_TIMESTAMP_NEXT_EVALUATION = 'PluginAveragePricePellet.timestampNextEvaluation';
     const KG_PER_BAG = 15;
-    const KW_PER_KG = 4.8;
+    const KWH_PER_KG = 4.8;
 
     use IntervalAwareTrait;
 
@@ -41,13 +41,19 @@ class PluginAveragePricePellet extends PluginAbstract
             return;
         }
 
+        $configuration = $context->getConfiguration()->load();
+        $averageConsumption = $configuration['pluginAveragePricePellet.averageConsumption'];
+
         $priceAveragePerTon = array_pop($response)['value'];
         $priceAveragePerBag = ($priceAveragePerTon / 1000) * PluginAveragePricePellet::KG_PER_BAG;
-        $priceAveragePerKW = ($priceAveragePerTon / 1000) / PluginAveragePricePellet::KW_PER_KG;
+        $priceAveragePerKWh = ($priceAveragePerTon / 1000) / PluginAveragePricePellet::KWH_PER_KG;
+        $costsAveragePerMonth = $priceAveragePerKWh * ($averageConsumption / 12);
 
         $context->getMonitor()->set('pelletPriceAveragePerTon', round($priceAveragePerTon, 2));
-        $context->getMonitor()->set('pelletPriceAveragePerKW', round($priceAveragePerKW, 2));
+        $context->getMonitor()->set('pelletPriceAveragePerKWh', round($priceAveragePerKWh, 2));
         $context->getMonitor()->set('pelletPriceAveragePerBag', round($priceAveragePerBag, 2));
+        $context->getMonitor()->set('pelletCostsAveragePerMonth', round($costsAveragePerMonth, 2));
+        $context->getMonitor()->set('pelletAverageConsumption', $averageConsumption);
         $context->getMonitor()->save();
     }
 }

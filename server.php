@@ -63,7 +63,7 @@ try {
     $log = new Log($config['logfile'], $config['verbose']);
     $queue = new Queue($config['queue']);
     $systaBridge = new SystaBridge();
-    $monitor = new Monitor($config['monitor']);
+    $monitor = new Monitor($configuration);
     $dump = new Dump($config['dumpfile']);
     $serialDeviceConfiguration = new SerialDeviceConfiguration($config['serialDevice']);
     $storage = new KeyValueStorage($config['storagePath']);

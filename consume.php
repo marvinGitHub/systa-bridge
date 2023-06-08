@@ -10,7 +10,7 @@ if (false === $config = $configuration->load()) {
 
 $log = new Log($config['logfile'], $config['verbose']);
 
-$monitor = new Monitor($config['monitor']);
+$monitor = new Monitor($configuration);
 
 $serialDeviceConfiguration = new SerialDeviceConfiguration($serialDevice = $config['serialDevice']);
 $serialDeviceConfiguration->configure();

@@ -2,7 +2,7 @@
 
 class PluginContext
 {
-    private $configuration;
+    use ConfigurationAwareTrait;
     private $storage;
     private $monitor;
     private $queue;
@@ -13,7 +13,8 @@ class PluginContext
 
     public function __construct(Configuration $configuration, KeyValueStorage $storage, StringBuffer $buffer, Serial $serial, Monitor $monitor, Queue $queue, Log $log, Dump $dump)
     {
-        $this->configuration = $configuration;
+        $this->setConfiguration($configuration);
+
         $this->storage = $storage;
         $this->buffer = $buffer;
         $this->serial = $serial;
@@ -21,11 +22,6 @@ class PluginContext
         $this->queue = $queue;
         $this->log = $log;
         $this->dump = $dump;
-    }
-
-    public function getConfiguration(): Configuration
-    {
-        return $this->configuration;
     }
 
     public function getStorage(): KeyValueStorage
