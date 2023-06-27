@@ -27,12 +27,16 @@ class PluginMQTTPublisher extends PluginAbstract
         try {
             $broker = $this->getBroker();
 
-            $mqtt = new Bluerhinos\phpMQTT($broker['host'], $broker['port'], $broker['user']);
+            if (!Helper::checkPortAccessibility($host = $broker['host'], $port = (int)$broker['port'], 2)) {
+                throw new RuntimeException(sprintf('Unable to connect to mqtt broker: %s:%u', $host, $port));
+            }
+
+            $mqtt = new Bluerhinos\phpMQTT($host, $port, $broker['user']);
 
             $connected = $mqtt->connect(true, null, $broker['user'], $broker['pass']);
 
             if (!$connected) {
-                throw new RuntimeException(sprintf('Unable to connect to mqtt broker: %s', $broker['host']));
+                throw new RuntimeException(sprintf('Unable to connect to mqtt broker: %s:%u', $host, $port));
             }
 
             foreach ($context->getMonitor()->load() as $key => $value) {

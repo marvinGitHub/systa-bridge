@@ -7,6 +7,12 @@ class SystaBridge
     const COMMAND_STOP_MONITORING = '0a0115e0';
     const COMMAND_CIRCUIT1_CONTINUOUS_HEATING = '0a0a1d0c1153455400020103c0';
     const COMMAND_CIRCUIT2_CONTINUOUS_HEATING = '0a0a1d0c115345540188010339';
+    const COMMAND_CIRCUIT1_SUMMER = '0a0a1d0c1153455400020106bd';
+    const COMMAND_CIRCUIT2_SUMMER = '0a0a1d0c115345540188010636';
+    const COMMAND_CIRCUIT1_AUTO1 = '0a0a1d0c1153455400020100c3';
+    const COMMAND_CIRCUIT1_AUTO2 = '0a0a1d0c1153455400020101c2';
+    const COMMAND_CIRCUIT1_AUTO3 = '0a0a1d0c1153455400020102c1';
+    const COMMAND_CIRCUIT1_LOWERING = '0a0a1d0c1153455400020105be';
 
     const COMMAND_CIRCUIT1_COMFORT = '0a0a1d0c1153455400020104bf';
     const COMMAND_CIRCUIT2_COMFORT = '0a0a1d0c115345540188010438';
@@ -14,13 +20,13 @@ class SystaBridge
     public static function getDocumentedCommands(): array
     {
         return [
-            '0a0a1d0c1153455400020100c3' => 'Circuit1: Set operation mode to auto (1)',
-            '0a0a1d0c1153455400020101c2' => 'Circuit1: Set operation mode to auto (2)',
-            '0a0a1d0c1153455400020102c1' => 'Circuit1: Set operation mode to auto (3)',
+            SystaBridge::COMMAND_CIRCUIT1_AUTO1 => 'Circuit1: Set operation mode to auto (1)',
+            SystaBridge::COMMAND_CIRCUIT1_AUTO2 => 'Circuit1: Set operation mode to auto (2)',
+            SystaBridge::COMMAND_CIRCUIT1_AUTO3 => 'Circuit1: Set operation mode to auto (3)',
             SystaBridge::COMMAND_CIRCUIT1_CONTINUOUS_HEATING => 'Circuit1: Set operation mode to continuous heating',
             SystaBridge::COMMAND_CIRCUIT1_COMFORT => 'Circuit1: Set operation mode to continuous comfort',
-            '0a0a1d0c1153455400020105be' => 'Circuit1: Set operation mode to lowering',
-            '0a0a1d0c1153455400020106bd' => 'Circuit1: Set operation mode to summer',
+            SystaBridge::COMMAND_CIRCUIT1_LOWERING => 'Circuit1: Set operation mode to lowering',
+            SystaBridge::COMMAND_CIRCUIT1_SUMMER => 'Circuit1: Set operation mode to summer',
             '0a0a1d0c1153455400020107bc' => 'Circuit1: Set operation mode to disabled',
             '0a0a1d0c115345540188010042' => 'Circuit2: Set operation mode to auto (1)',
             '0a0a1d0c115345540188010141' => 'Circuit2: Set operation mode to auto (2)',
@@ -28,7 +34,7 @@ class SystaBridge
             SystaBridge::COMMAND_CIRCUIT2_CONTINUOUS_HEATING => 'Circuit2: Set operation mode to continuous heating',
             SystaBridge::COMMAND_CIRCUIT2_COMFORT => 'Circuit2: Set operation mode to continuous comfort',
             '0a0a1d0c115345540188010537' => 'Circuit2: Set operation mode to lowering',
-            '0a0a1d0c115345540188010636' => 'Circuit2: Set operation mode to summer',
+            SystaBridge::COMMAND_CIRCUIT2_SUMMER => 'Circuit2: Set operation mode to summer',
             '0a0a1d0c115345540188010735' => 'Circuit2: Set operation mode to disabled',
             SystaBridge::COMMAND_START_MONITORING_LEGACY => 'System: Start Monitoring (legacy)',
             SystaBridge::COMMAND_START_MONITORING => 'System: Start Monitoring',

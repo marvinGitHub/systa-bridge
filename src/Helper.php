@@ -60,4 +60,16 @@ class Helper
 
         return 1 + ($end->getTimestamp() - $reference->getTimestamp());
     }
+
+    public static function checkPortAccessibility(string $host, int $port, int $timeout = 1): bool
+    {
+        $result = false;
+
+        if ($pf = @fsockopen($host, $port, $err, $err_string, $timeout)) {
+            $result = true;
+            fclose($pf);
+        }
+
+        return $result;
+    }
 }
