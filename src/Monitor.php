@@ -244,9 +244,10 @@ class Monitor
     {
         $configuration = $this->getConfiguration()->load();
 
-        // TODO check why error code can be 65535
-        if ($this->data['errorCodeBoiler'] === 65535) {
-            $this->data['errorCodeBoiler'] = 0;
+        if (isset($configuration['pluginMonitoring.ignoreErrorCodesBoiler'])) {
+            $this->data['errorCodeBoiler'] = array_filter($this->data['errorCodeBoiler'] ?? [], function ($v) use ($configuration) {
+                return !in_array($v, $configuration['pluginMonitoring.ignoreErrorCodesBoiler']);
+            });
         }
 
         // check if sensor is not connected / broken

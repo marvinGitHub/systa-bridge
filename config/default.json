@@ -24,5 +24,6 @@
   "monitor.sensorCirculationInstalled" : false,
   "storagePath": "/tmp",
   "pluginMQTTPublisher.mqttBroker": "mqtt://mqtt:xvD75rZ@192.168.178.20:1883/systa-bridge/monitor",
+  "pluginMonitoring.ignoreErrorCodesBoiler": [255, 65535],
   "verbose": false
 }
