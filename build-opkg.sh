@@ -6,7 +6,7 @@ find . -name .DS_Store | xargs rm
 
 mkdir -p ./build/{control,data}
 mkdir -p ./build/data/root/systa-bridge/
-mkdir -p ./build/data/etc/logrotate.conf.d/
+mkdir -p ./build/data/etc/logrotate.d/
 mkdir -p ./build/data/usr/lib/micron.d/
 
 cp -r ./cron ./build/data/root/systa-bridge/
@@ -20,7 +20,7 @@ cp ./index.php ./build/data/root/systa-bridge/
 cp ./bootstrap.php ./build/data/root/systa-bridge/
 cp -r ./vendor ./build/data/root/systa-bridge/
 
-cp ./config/logrotate.conf ./build/data/etc/logrotate.conf.d/systa-bridge
+cp ./config/logrotate.conf ./build/data/etc/logrotate.d/systa-bridge
 
 cp ./cron/logrotate/logrotate ./build/data/usr/lib/micron.d/
 cp ./cron/consumer/consumer ./build/data/usr/lib/micron.d/
