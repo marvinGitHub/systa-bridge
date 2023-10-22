@@ -41,20 +41,20 @@ class PluginHandler
 
     public function run()
     {
-        try {
-            /** @var PluginAbstract $plugin */
-            foreach ($this->plugins as $plugin) {
-                $pluginEnabled = $this->plugins[$plugin];
+        /** @var PluginAbstract $plugin */
+        foreach ($this->plugins as $plugin) {
+            $pluginEnabled = $this->plugins[$plugin];
 
-                if (!$pluginEnabled) {
-                    continue;
-                }
-
-                $plugin->run($this->getDefaultContext());
+            if (!$pluginEnabled) {
+                continue;
             }
-        } catch (Exception $e) {
-            $this->getDefaultContext()->getLog()->print('error', $e->getMessage());
-            $this->getDefaultContext()->getLog()->print('error', $e->getTraceAsString());
+
+            try {
+                $plugin->run($this->getDefaultContext());
+            } catch (Exception $e) {
+                $this->getDefaultContext()->getLog()->print('error', $e->getMessage());
+                $this->getDefaultContext()->getLog()->print('error', $e->getTraceAsString());
+            }
         }
     }
 }
