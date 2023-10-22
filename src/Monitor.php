@@ -226,6 +226,14 @@ class Monitor
         if (isset($this->data['temperatureSetFlowCircuit2']) && isset($this->data['temperatureFlowCircuit2'])) {
             $this->data['temperatureDifferenceFlowSetCurrentCircuit2'] = abs($this->data['temperatureSetFlowCircuit2'] - $this->data['temperatureFlowCircuit2']);
         }
+
+        if (isset($this->data['temperatureOutside']) && isset($this->data['temperatureFlowCircuit1'])) {
+            $this->data['temperatureDifferenceOutsideFlowCircuit1'] = abs($this->data['temperatureFlowCircuit1'] - $this->data['temperatureOutside']);
+        }
+
+        if (isset($this->data['temperatureOutside']) && isset($this->data['temperatureFlowCircuit2'])) {
+            $this->data['temperatureDifferenceOutsideFlowCircuit2'] = abs($this->data['temperatureFlowCircuit2'] - $this->data['temperatureOutside']);
+        }
     }
 
     private function getHeatingInformation(string $message): array
