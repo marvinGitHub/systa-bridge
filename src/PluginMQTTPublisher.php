@@ -31,7 +31,7 @@ class PluginMQTTPublisher extends PluginAbstract
                 throw new RuntimeException(sprintf('Unable to connect to mqtt broker: %s:%u', $host, $port));
             }
 
-            $mqtt = new Bluerhinos\phpMQTT($host, $port, $broker['user']);
+            $mqtt = new MessageQueuingTelemetryTransport($host, $port, $broker['user']);
 
             $connected = $mqtt->connect(true, null, $broker['user'], $broker['pass']);
 
@@ -40,7 +40,12 @@ class PluginMQTTPublisher extends PluginAbstract
             }
 
             foreach ($context->getMonitor()->load() as $key => $value) {
-                $mqtt->publish(sprintf('%s/%s', ltrim($broker['path'], '/'), $key), json_encode(['value' => $value]));
+                $topic = sprintf('%s/%s', ltrim($broker['path'], '/'), $key);
+                $published = $mqtt->publish($topic, json_encode(['value' => $value]));
+
+                if (!$published) {
+                    throw new RuntimeException(sprintf('Unable to publish topic: %s', $topic));
+                }
             }
 
             $mqtt->close();
@@ -48,6 +53,8 @@ class PluginMQTTPublisher extends PluginAbstract
             $context->getLog()->print('error', sprintf('%s: failed publishing data', static::class));
             $context->getLog()->print('error', $e->getMessage());
             $context->getLog()->print('error', $e->getTraceAsString());
+        } finally {
+            $mqtt->close();
         }
     }
 }

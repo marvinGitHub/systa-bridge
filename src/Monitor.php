@@ -253,9 +253,11 @@ class Monitor
         $configuration = $this->getConfiguration()->load();
 
         if (isset($configuration['pluginMonitoring.ignoreErrorCodesBoiler'])) {
-            $this->data['errorCodeBoiler'] = array_filter($this->data['errorCodeBoiler'] ?? [], function ($v) use ($configuration) {
-                return !in_array($v, $configuration['pluginMonitoring.ignoreErrorCodesBoiler']);
-            });
+            foreach ($configuration['pluginMonitoring.ignoreErrorCodesBoiler'] as $ignoredErrorCode) {
+                if ($this->data['errorCodeBoiler'] === $ignoredErrorCode) {
+                    $this->data['errorCodeBoiler'] = 0;
+                }
+            }
         }
 
         // check if sensor is not connected / broken

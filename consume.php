@@ -1,7 +1,5 @@
 <?php
 
-ini_set('max_execution_time', 0);
-
 require 'bootstrap.php';
 
 $configuration = new Configuration(__DIR__ . '/config/config.json', __DIR__ . '/config/default.json');
