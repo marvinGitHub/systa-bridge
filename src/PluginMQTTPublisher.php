@@ -31,21 +31,12 @@ class PluginMQTTPublisher extends PluginAbstract
                 throw new RuntimeException(sprintf('Unable to connect to mqtt broker: %s:%u', $host, $port));
             }
 
-            $mqtt = new MessageQueuingTelemetryTransport($host, $port, $broker['user']);
-
-            $connected = $mqtt->connect(true, null, $broker['user'], $broker['pass']);
-
-            if (!$connected) {
-                throw new RuntimeException(sprintf('Unable to connect to mqtt broker: %s:%u', $host, $port));
-            }
+            $mqtt = new \PhpMqtt\Client\MQTTClient($host, $port);
+            $mqtt->connect($broker['user'], $broker['pass']);
 
             foreach ($context->getMonitor()->load() as $key => $value) {
                 $topic = sprintf('%s/%s', ltrim($broker['path'], '/'), $key);
-                $published = $mqtt->publish($topic, json_encode(['value' => $value]));
-
-                if (!$published) {
-                    throw new RuntimeException(sprintf('Unable to publish topic: %s', $topic));
-                }
+                $mqtt->publish($topic, json_encode(['value' => $value]));
             }
 
             $mqtt->close();
@@ -53,8 +44,6 @@ class PluginMQTTPublisher extends PluginAbstract
             $context->getLog()->print('error', sprintf('%s: failed publishing data', static::class));
             $context->getLog()->print('error', $e->getMessage());
             $context->getLog()->print('error', $e->getTraceAsString());
-        } finally {
-            $mqtt->close();
         }
     }
 }

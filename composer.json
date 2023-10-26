@@ -3,5 +3,10 @@
     "platform": {
       "php": "7.2"
     }
+  },
+  "require": {
+    "ext-json": "*",
+    "ext-pcntl": "*",
+    "php-mqtt/client": "^0.3.0"
   }
 }
