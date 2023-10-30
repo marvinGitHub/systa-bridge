@@ -37,4 +37,6 @@ uci set firewall.@redirect[-1].target=DNAT
 
 uci commit firewall
 
+chown root:root /etc/logrotate.d/systa-bridge
+
 reboot
