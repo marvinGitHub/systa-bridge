@@ -95,7 +95,9 @@ try {
             stdout('System configuration has been saved successfully.');
             exit;
         case 'showSystemConfigurationEditor':
+            ksort($config);
             $config = json_encode($config, JSON_PRETTY_PRINT);
+            $config = str_replace('\/', '/', $config);
 
             echo <<<HTML
 <form action="server.php" method="post">
@@ -181,7 +183,6 @@ HTML;
             $monitor->clear();
             stdout($message = 'Monitor has been cleared.');
             $log->print('info', $message);
-            exit;
             exit;
         case 'showDump':
             $log->print('info', 'Load dump');
