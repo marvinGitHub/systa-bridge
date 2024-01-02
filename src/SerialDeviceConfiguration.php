@@ -14,7 +14,7 @@ class SerialDeviceConfiguration
         return glob('/dev/ttyUSB*');
     }
 
-    public function serialDeviceAttached()
+    public function serialDeviceAttached(): bool
     {
         return file_exists($this->serialDeviceName);
     }
@@ -27,14 +27,14 @@ class SerialDeviceConfiguration
 
         $output = null;
 
-        if (false === exec(sprintf('stty -F %s', $this->serialDeviceName), $output)) {
+        if (false === exec(sprintf('stty -F %s', escapeshellarg($this->serialDeviceName)), $output)) {
             return false;
         }
 
         return implode(PHP_EOL, $output);
     }
 
-    public function getExpectedConfiguration()
+    public function getExpectedConfiguration(): string
     {
         return <<<TXT
 speed 9600 baud; line = 0;
@@ -45,7 +45,7 @@ min = 1; time = 0;
 TXT;
     }
 
-    public function alreadyConfigured()
+    public function alreadyConfigured(): bool
     {
         return $this->load() === $this->getExpectedConfiguration();
     }
@@ -57,9 +57,9 @@ TXT;
         }
 
         if ($this->alreadyConfigured()) {
-            return;
+            return true;
         }
 
-        return exec(sprintf('stty -F %s 9600 raw -onlcr -echo', $this->serialDeviceName));
+        return exec(sprintf('stty -F %s 9600 raw -onlcr -echo', escapeshellarg($this->serialDeviceName)));
     }
 }

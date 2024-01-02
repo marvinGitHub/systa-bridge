@@ -2,17 +2,14 @@
 
 class Serial
 {
-    const OPERATING_SYSTEM_LINUX = 0;
-
     const SERIAL_DEVICE_NOTSET = 0;
     const SERIAL_DEVICE_SET = 1;
     const SERIAL_DEVICE_OPENED = 2;
 
-    public $device = null;
-    public $handle = null;
+    public $device;
+    public $handle;
     public $state;
-    public $buffer = "";
-    public $operatingSystem;
+    public $buffer = '';
 
     /**
      * This var says if buffer should be flushed by sendMessage (true) or manually (false)
@@ -23,23 +20,17 @@ class Serial
 
     /**
      * Constructor
+     *
+     * @throws RuntimeException
      */
     public function __construct()
     {
         $this->state = static::SERIAL_DEVICE_NOTSET;
 
-        setlocale(LC_ALL, "en_US");
-
-        if (substr(php_uname(), 0, 5) === "Linux") {
-            $this->operatingSystem = static::OPERATING_SYSTEM_LINUX;
-            if ($this->execute("stty --version") === 0) {
-                register_shutdown_function([$this, "deviceClose"]);
-            } else {
-                trigger_error("No stty available, unable to run.", E_USER_ERROR);
-            }
+        if (Helper::execute('stty --version') === 0) {
+            register_shutdown_function([$this, 'deviceClose']);
         } else {
-            trigger_error("Host OS is not linux, unable tu run.", E_USER_ERROR);
-            exit();
+            throw new RuntimeException('No stty available, unable to run.');
         }
     }
 
@@ -49,23 +40,21 @@ class Serial
      *
      * @param string $device the name of the device to be used
      * @return bool
+     * @throws RuntimeException
      */
-    public function deviceSet($device)
+    public function deviceSet(string $device): bool
     {
         if ($this->state !== static::SERIAL_DEVICE_OPENED) {
-            if ($this->operatingSystem === static::OPERATING_SYSTEM_LINUX) {
-                if ($this->execute("stty -F " . $device) === 0) {
-                    $this->device = $device;
-                    $this->state = static::SERIAL_DEVICE_SET;
-                    return true;
-                }
+            if (Helper::execute('stty -F ' . $device) === 0) {
+                $this->device = $device;
+                $this->state = static::SERIAL_DEVICE_SET;
+                return true;
             }
 
-            trigger_error("Specified serial port is not valid", E_USER_WARNING);
-        } else {
-            trigger_error("You must close your device before to set an other one", E_USER_WARNING);
+            throw new RuntimeException('Specified serial port is not valid');
         }
-        return false;
+
+        throw new RuntimeException('You must close your device before to set an other one');
     }
 
     /**
@@ -73,22 +62,20 @@ class Serial
      *
      * @param string $mode Opening mode : same parameter as fopen()
      * @return bool
+     * @throws RuntimeException
      */
-    public function deviceOpen($mode = "r+b")
+    public function deviceOpen(string $mode = 'r+b'): bool
     {
         if ($this->state === static::SERIAL_DEVICE_OPENED) {
-            trigger_error("The device is already opened", E_USER_NOTICE);
-            return true;
+            throw new RuntimeException('The device is already opened');
         }
 
         if ($this->state === static::SERIAL_DEVICE_NOTSET) {
-            trigger_error("The device must be set before to be open", E_USER_WARNING);
-            return false;
+            throw new RuntimeException('The device must be set before to be open');
         }
 
-        if (!preg_match("@^[raw]\+?b?$@", $mode)) {
-            trigger_error("Invalid opening mode : " . $mode . ". Use fopen() modes.", E_USER_WARNING);
-            return false;
+        if (!preg_match('@^[raw]\+?b?$@', $mode)) {
+            throw new RuntimeException(sprintf('Invalid opening mode : %s. Use fopen() modes.', $mode));
         }
 
         $this->handle = @fopen($this->device, $mode);
@@ -100,16 +87,17 @@ class Serial
         }
 
         $this->handle = null;
-        trigger_error("Unable to open the device", E_USER_WARNING);
-        return false;
+
+        throw new RuntimeException('Unable to open the device');
     }
 
     /**
      * Closes the device
      *
      * @return bool
+     * @throws RuntimeException
      */
-    public function deviceClose()
+    public function deviceClose(): bool
     {
         if ($this->state !== static::SERIAL_DEVICE_OPENED) {
             return true;
@@ -121,58 +109,53 @@ class Serial
             return true;
         }
 
-        trigger_error("Unable to close the device", E_USER_ERROR);
-        return false;
+        throw new RuntimeException('Unable to close the device');
     }
 
     /**
      * Sends a string to the device
      *
      * @param string $str string to be sent to the device
-     * @param float $waitForReply time to wait for the reply (in microseconds)
+     * @param int $waitForReply time to wait for the reply (in microseconds)
      */
-    public function sendMessage($str, $waitForReply = 100)
+    public function sendMessage(string $str, int $waitForReply = 100)
     {
         $this->buffer .= $str;
 
         if ($this->autoflush === true) $this->flush();
 
-        usleep((int)$waitForReply);
+        usleep($waitForReply);
     }
 
     /**
      * Reads the port until no new data are available, then return the content.
      *
-     * @pararm int $count number of characters to be read (will stop before
+     * @param int $count number of characters to be read (will stop before
      *  if less characters are in the buffer)
+     * @param int $length
      * @return string
      */
-    public function readPort($count = 0)
+    public function readPort(int $count = 0, int $length = 128): string
     {
         if ($this->state !== static::SERIAL_DEVICE_OPENED) {
-            trigger_error("Device must be opened to read it", E_USER_WARNING);
-            return false;
+            throw new RuntimeException('Device must be opened to read it');
         }
 
-        if ($this->operatingSystem === static::OPERATING_SYSTEM_LINUX) {
-            $content = "";
-            $i = 0;
+        $content = '';
+        $i = 0;
 
-            if ($count !== 0) {
-                do {
-                    if ($i > $count) $content .= fread($this->handle, ($count - $i));
-                    else $content .= fread($this->handle, 128);
-                } while (($i += 128) === strlen($content));
-            } else {
-                do {
-                    $content .= fread($this->handle, 128);
-                } while (($i += 128) === strlen($content));
-            }
-
-            return $content;
+        if ($count !== 0) {
+            do {
+                if ($i > $count) $content .= fread($this->handle, ($count - $i));
+                else $content .= fread($this->handle, $length);
+            } while (($i += $length) === strlen($content));
+        } else {
+            do {
+                $content .= fread($this->handle, $length);
+            } while (($i += $length) === strlen($content));
         }
 
-        return false;
+        return $content;
     }
 
     /**
@@ -180,48 +163,22 @@ class Serial
      *
      * @return bool
      */
-    public function flush()
+    public function flush(): bool
     {
-        if (!$this->deviceIsOpened()) return false;
+        if ($this->state !== static::SERIAL_DEVICE_OPENED) return false;
 
-        if (fwrite($this->handle, $this->buffer) !== false) {
-            $this->buffer = "";
-            return true;
-        } else {
-            $this->buffer = "";
-            trigger_error("Error while sending message", E_USER_WARNING);
-            return false;
-        }
-    }
+        $bufferWritten = fwrite($this->handle, $this->buffer);
+        $this->buffer = '';
 
-    public function deviceIsOpened()
-    {
-        if ($this->state !== static::SERIAL_DEVICE_OPENED) {
-            trigger_error("Device must be opened", E_USER_WARNING);
-            return false;
+        if (!$bufferWritten) {
+            throw new RuntimeException('Error while sending message');
         }
 
         return true;
     }
 
-    public function execute($cmd, &$out = null)
+    public function getState(): int
     {
-        $desc = [
-            1 => ["pipe", "w"],
-            2 => ["pipe", "w"]
-        ];
-
-        $proc = proc_open($cmd, $desc, $pipes);
-
-        $ret = stream_get_contents($pipes[1]);
-        $err = stream_get_contents($pipes[2]);
-
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-
-        $retVal = proc_close($proc);
-
-        if (func_num_args() == 2) $out = [$ret, $err];
-        return $retVal;
+        return $this->state;
     }
 }

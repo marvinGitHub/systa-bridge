@@ -72,4 +72,25 @@ class Helper
 
         return $result;
     }
+
+    public static function execute($cmd, &$out = null)
+    {
+        $desc = [
+            1 => ["pipe", "w"],
+            2 => ["pipe", "w"]
+        ];
+
+        $proc = proc_open($cmd, $desc, $pipes);
+
+        $ret = stream_get_contents($pipes[1]);
+        $err = stream_get_contents($pipes[2]);
+
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+
+        $retVal = proc_close($proc);
+
+        if (func_num_args() == 2) $out = [$ret, $err];
+        return $retVal;
+    }
 }

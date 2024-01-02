@@ -32,7 +32,7 @@ class PluginMQTTPublisher extends PluginAbstract
             }
 
             $mqtt = new \PhpMqtt\Client\MQTTClient($host, $port);
-            $mqtt->connect($broker['user'], $broker['pass']);
+            $mqtt->connect($broker['user'], $broker['pass'], null, true);
 
             foreach ($context->getMonitor()->load() as $key => $value) {
                 $topic = sprintf('%s/%s', ltrim($broker['path'], '/'), $key);

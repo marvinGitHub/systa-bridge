@@ -28,4 +28,3 @@ require_once 'PluginAveragePricePellet.php';
 require_once 'PluginOperationTimeBoiler.php';
 require_once 'PluginMQTTPublisher.php';
 require_once 'PluginContext.php';
-require_once 'MessageQueuingTelemetryTransport.php';

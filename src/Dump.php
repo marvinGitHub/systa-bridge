@@ -21,16 +21,16 @@ class Dump
     public function write(string $data)
     {
         if (!$this->enabled) {
-            return;
+            return 0;
         }
 
         return file_put_contents($this->pathname, $data, FILE_APPEND);
     }
 
-    public function clear()
+    public function clear(): bool
     {
         if (!file_exists($this->pathname)) {
-            return;
+            return false;
         }
         return unlink($this->pathname);
     }
